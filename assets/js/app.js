@@ -4,8 +4,42 @@ $(document).ready(function () {
         e.preventDefault()
         $(this).tab('show');
     })
-    
+
     // Layout Click Events
+
+    $("#authentication-form input[id='auth-input-name']").on('keydown', function (e) {
+        var isNumeric = /^[0-9]+$/.test(e.key);
+
+        if (isNumeric) {
+            e.preventDefault();
+        }
+    });  // End of authentication-form input keydown event   
+
+    $("#authentication-form input[id='auth-input-number']").on('keydown', function (e) {
+        if (e.key === "Backspace" || e.key === "Delete" || e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Tab" || e.key === "Enter" || e.ctrlKey) {
+            return;
+        }
+        var isNumeric = /^[0-9]+$/.test(e.key);
+        if (!isNumeric) {
+            e.preventDefault();
+        }
+    });  // End of authentication-form input keydown event
+
+    $("#authentication-form").on('submit', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var name = form.find('input[id="auth-input-name"]').val();
+        var number = form.find('input[id="auth-input-number"]').val();
+
+        console.log(name, number)
+
+        if (name != '' && number != '') {
+            window.location.href = "index.html";
+        } else {
+            alert('Invalid Username or Password');
+        }
+    });
+
     $('#chats-tab').on('click', function (e) {
         e.preventDefault()
         $("body").removeClass("calls-tab-open friends-tab-open profile-tab-open");
@@ -59,41 +93,41 @@ $(document).ready(function () {
         delegate: 'a.popup-media',
         type: 'image',
         gallery: {
-          enabled: true,
-          navigateByImgClick: true,
-          preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
         }
     });
-      
+
     //Chat Dropdown Filter
     $('[data-chat-filter]').on('click', function () {
         let selectedOption = $(this).data('select');
         $('[data-chat-filter-list]').text($(this).text());
         if (selectedOption === 'all-chats') {
-          $('[data-chat-list]').find('li').each(function () {
-            $(this).show();
-          });
+            $('[data-chat-list]').find('li').each(function () {
+                $(this).show();
+            });
         } else {
-          $('[data-chat-list]').find('li').each(function () {
-            $(this).hide();
-          });
-          $('[data-chat-list] li.' + selectedOption).show();
+            $('[data-chat-list]').find('li').each(function () {
+                $(this).hide();
+            });
+            $('[data-chat-list] li.' + selectedOption).show();
         }
     });
-    
+
     //Call Dropdown Filter
     $('[data-call-filter]').on('click', function () {
         let selectedOption = $(this).data('select');
         $('[data-call-filter-list]').text($(this).text());
         if (selectedOption === 'all-calls') {
-          $('[data-call-list]').find('li').each(function () {
-            $(this).show();
-          });
+            $('[data-call-list]').find('li').each(function () {
+                $(this).show();
+            });
         } else {
-          $('[data-call-list]').find('li').each(function () {
-            $(this).hide();
-          });
-          $('[data-call-list] li.' + selectedOption).show();
+            $('[data-call-list]').find('li').each(function () {
+                $(this).hide();
+            });
+            $('[data-call-list] li.' + selectedOption).show();
         }
     });
 
@@ -102,9 +136,9 @@ $(document).ready(function () {
         btnNextHtml: "Next",
         btnLastStepHtml: "Finish",
         disableNextButton: false,
-        completeCallback: function () {},
+        completeCallback: function () { },
         callbacks: {},
-        getTitleAndStep: function () {}
+        getTitleAndStep: function () { }
     });
 
     // File Input
@@ -112,7 +146,7 @@ $(document).ready(function () {
         $(this).next('.custom-file-label').html(event.target.files[0].name);
     })
 
-    
+
     // SVG File Inject
     SVGInject(document.getElementsByClassName('injectable'));
 
@@ -155,7 +189,7 @@ $(document).ready(function () {
         $("#appNavTab .nav-link").removeClass("active");
     })
 
-    
+
     // Todo task done
     $('.todo-item input[type="checkbox"]').click(function () {
         if ($(this).is(":checked")) {
@@ -166,10 +200,10 @@ $(document).ready(function () {
     });
 
     // Responsive media query to remove appbar in smaller screen on initial load & resize
-    function checkSize(){
-        if ($(window).width() <= 1200){	
+    function checkSize() {
+        if ($(window).width() <= 1200) {
             $(".appbar").addClass("appbar-hidden");
-        } else{
+        } else {
             $(".appbar").removeClass("appbar-hidden");
         }
     }
@@ -179,6 +213,7 @@ $(document).ready(function () {
 
     // Emojione Area
     $("#messageInput").emojioneArea();
+
 
 });
 
