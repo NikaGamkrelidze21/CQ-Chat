@@ -25,12 +25,13 @@ Chanelog:
         &.active{
             .avatar::before {
                 // border-color: $primary;
-                border-color: white;
+                border-color: $white;
             }
         }
         &.unread{
             .avatar::before {
-                border-color: $message-unread;
+                border-color: $white;
+                // border-color: $message-unread;
             }
         }
 
@@ -59,7 +60,8 @@ Chanelog:
 
             @include media-breakpoint-up(xl){
                 .contacts-link{
-                    border-color: $primary;
+                    // border-color: $primary;
+                    border-color: white;
                 }
             }
         }

@@ -22,6 +22,11 @@
 
     <link rel="stylesheet" href="./../assets/webfonts/inter/inter.css"> 
     <link rel="stylesheet" href="./../assets/css/app.min.css">
+
+    
+    <!-- SOCKET IO -->
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
 </head>
 
 <body class="chats-tab-open">
@@ -29,7 +34,7 @@
     <!-- Main Layout Start -->
     <div class="main-layout">
         <!-- Navigation Start -->
-        <div class="navigation navbar navbar-light bg-primary">
+        <div class="navigation navbar navbar-light bg-primary" style="display: none !important;">
             <!-- Logo Start -->
             <a class="d-none d-xl-block bg-light rounded p-1" href="./../index.html">
                 <!-- Default :: Inline SVG -->
@@ -104,7 +109,7 @@
         <!-- Navigation End -->
 
         <!-- Sidebar Start -->
-        <aside class="sidebar">
+        <aside class="sidebar" style="display: none !important;">
             <!-- Tab Content Start -->
             <div class="tab-content">
                 <!-- Chat Tab Content Start -->
@@ -180,10 +185,9 @@
                                         <!-- Dropdown Menu Start -->
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" data-chat-filter="" data-select="all-chats" href="#">All Chats</a>
-                                            <a class="dropdown-item" data-chat-filter="" data-select="friends" href="#">Friends</a>
-                                            <a class="dropdown-item" data-chat-filter="" data-select="groups" href="#">Groups</a>
-                                            <a class="dropdown-item" data-chat-filter="" data-select="unread" href="#">Unread</a>
-                                            <a class="dropdown-item" data-chat-filter="" data-select="archived" href="#">Archived</a>
+                                            <a class="dropdown-item" data-chat-filter="" data-select="friends" href="#">Facebook</a>
+                                            <a class="dropdown-item" data-chat-filter="" data-select="groups" href="#">Instagram</a>
+                                            <a class="dropdown-item" data-chat-filter="" data-select="unread" href="#">Web Page</a>
                                         </div>
                                         <!-- Dropdown Menu End -->
                                     </div>
@@ -2307,7 +2311,7 @@
         <!-- Main End -->
 
         <!-- App Add-ons Start -->
-        <div class="appbar">
+        <div class="appbar" style="display: none !important;">
             <div class="appbar-wrapper hide-scrollbar">
 
                 <!-- Chat Back Button (Visible only in Small Devices) -->
@@ -3652,7 +3656,7 @@
     <script src="./../assets/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="./../assets/vendors/svg-inject/svg-inject.min.js"></script>
     <script src="./../assets/vendors/modal-stepes/modal-steps.min.js"></script>
-    <script src="./../assets/js/app.js"></script>
+    <script type="module" src="./../assets/js/app.js"></script>
 
 </body>
 
