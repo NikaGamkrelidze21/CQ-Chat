@@ -22,34 +22,43 @@
 
     <link rel="stylesheet" href="./../assets/webfonts/inter/inter.css"> 
     <link rel="stylesheet" href="./../assets/css/app.min.css">
+
+    
+    <!-- SOCKET IO -->
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
 </head>
 
 <body class="authentication-page">
-
     <!-- Main Layout Start -->
     <div class="main-layout card-bg-1">
         <div class="container d-flex flex-column">
             <div class="row no-gutters text-center align-items-center justify-content-center min-vh-100">
                 <div class="col-12 col-md-6 col-lg-5 col-xl-4">
-                    <h1 class="font-weight-bold">Sign up</h1>
-                    <p class="text-dark mb-3">We are Different, We Make You Different.</p>
-                    <form class="mb-3">
+                    <h1 class="font-weight-bold">გამარჯობა</h1>
+                    <p class="text-dark mb-3">შეიყვანეთ თქვენი პირადი მონაცემბი</p>
+                    <form class="mb-3" id="authentication-form">
                         <div class="form-group">
-                            <label for="name" class="sr-only">Name</label>
-                            <input type="text" class="form-control form-control-md" id="name" placeholder="Enter your name">
+                            <label for="email" class="sr-only">სახელი და გვარი</label>
+                            <input type="text" class="form-control form-control-md" id="auth-input-name" placeholder="სახელი და გვარი">
                         </div>
                         <div class="form-group">
-                            <label for="email" class="sr-only">Email Address</label>
-                            <input type="email" class="form-control form-control-md" id="email" placeholder="Enter your email">
+                            <label for="password" class="sr-only">ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control form-control-md" id="auth-input-number" placeholder="ტელეფონის ნომერი (5XX-XX-XX-XX)" maxlength="9">
                         </div>
-                        <div class="form-group">
-                            <label for="password" class="sr-only">Password</label>
-                            <input type="password" class="form-control form-control-md" id="password" placeholder="Enter your password">
+                        <div class="form-group d-flex justify-content-between">
+                            <!-- removed -->
+                            <!-- <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" checked="" id="checkbox-remember">
+                                <label class="custom-control-label text-muted font-size-sm" for="checkbox-remember">Remember me</label>
+                            </div> -->
+                            <!-- removed -->
+                            <!-- <a class="font-size-sm" href="./reset-password.html">Reset password</a> -->
                         </div>
-                        <button class="btn btn-primary btn-lg btn-block text-uppercase font-weight-semibold" type="submit">Sign up</button>
+                        <button class="btn btn-primary btn-lg btn-block text-uppercase font-weight-semibold" type="submit">დაკავშირება</button>
                     </form>
-
-                    <p>Already have an account? <a class="font-weight-semibold" href="./signin.html">Sign in</a>.</p>
+                    <!-- removed -->
+                    <!-- <p>Don't have an account? <a class="font-weight-semibold" href="./signup.html">Sign up</a>.</p> -->
                 </div>
             </div> 
         </div>
@@ -60,11 +69,10 @@
     <!-- Javascript Files -->
     <script src="./../assets/vendors/jquery/jquery-3.5.0.min.js"></script>
     <script src="./../assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="./../assets/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="./../assets/vendors/svg-inject/svg-inject.min.js"></script>
-    <script src="./../assets/vendors/modal-stepes/modal-steps.min.js"></script>
     <script src="./../assets/js/app.js"></script>
-
+    <script src="./../assets/js/socket-client.js"></script>
+    
 </body>
 
 </html>

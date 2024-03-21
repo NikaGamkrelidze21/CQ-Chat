@@ -100,11 +100,11 @@ Chanelog:
         border-radius: 50%;
         top: 0;
         right: 0;
-        border: 3px solid $white;
+        border: 1px solid $white;
     }
 
     &.avatar-online:before {
-        background: $success;
+        background: $danger;
     }
 
     &.avatar-offline:before {
