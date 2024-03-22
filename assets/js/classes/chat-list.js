@@ -1,20 +1,19 @@
-import { SELF, socket } from "../socket-operator.js";
+import { SELF, ROOMS, SELECTEDROOM, socket } from "../socket-operator.js";
 import { getRandomColor } from "../components/random-color.js";
 
 export class ChatListItem {
-    constructor(clientName, clientNumber, roomId, status, lastMessageTime = null, avatarColor = null, lastMessage = null,   unreadMessagesAmount = 0 ) {
-        this.clientNumber = clientNumber;
-        this.clientName = clientName;
-        this.roomId = roomId;
-        this.status = status;
+    constructor(room, unreadMessagesAmount = 0 ) {
+        console.log("(consstructor) => ChatListItem() ", room);
+        this.clientNumber = room.members.client.number;
+        this.clientName = room.members.client.name;
+        this.roomId = room.roomId;
+        this.status = room.status;
         
-        this.lastMessageTime = lastMessageTime;
-        this.lastMessage = lastMessage;
+        this.lastMessageTime = "Some time ago";
+        this.lastMessage = "No messages yet";
         this.unreadMessagesAmount = unreadMessagesAmount;
-        this.avatarColor = avatarColor ? avatarColor : getRandomColor();
+        this.avatarColor = room.members.client.avatarColor;
     }
-
-    
 
     GetItemParams() {
         return {
@@ -35,6 +34,14 @@ export class ChatListItem {
     ChangeRoom = () => {
         console.log("() => ChangeRoom()", this.roomId);
         SELF.currentRoomId = this.roomId;
+        ROOMS.forEach(element => {
+            if (element.roomId === this.roomId) {
+                // SELECTEDROOM = element;
+                console.log("element", element, "SELECTEDROOM", SELECTEDROOM);
+                SELECTEDROOM.setRoom(element);
+                // UpdateSessionStorageSELECTEDROOM();
+            }
+        });
         socket.emit('get_chat_history', { roomId: SELF.currentRoomId });
     }
 

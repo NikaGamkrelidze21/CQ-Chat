@@ -3,7 +3,7 @@ import { DisplayChatList } from "./handlers/chat-list-handlers.js"
 import Message from "./classes/message.js";
 import { Operator, Client } from "./classes/users.js";
 import { ChatListItem, ChatList } from "./classes/chat-list.js";
-import { Room, RoomMember } from "./classes/room.js";
+import { Room, RoomMember, SelectedRoom } from "./classes/room.js";
 
 var socket = io('https://chat.communiq.ge/namespace1',
     { transports: ['websocket'] });
@@ -18,7 +18,7 @@ let number = storedSession.number;
 let sessionID = storedSession.sessionID;
 let SELF = new Operator()
 let ROOMS = []
-
+var SELECTEDROOM = new SelectedRoom()
 
 if (name && number) {
     socket.auth = {
@@ -68,8 +68,7 @@ function UpdateSessionStorageROOMS() {
     sessionStorage.setItem('rooms', JSON.stringify(ROOMS));
 }
 
-
-export { GetSessionStorageUSER, UpdateSessionStorageUSER, UpdateSessionStorageROOMS, SELF, ROOMS, socket }
+export { GetSessionStorageUSER, UpdateSessionStorageUSER, UpdateSessionStorageROOMS, SELF, ROOMS, SELECTEDROOM, socket }
 
 // SOCKET LISTENERS ------------------------------------------------------------------
 socket.on('client_disconnected', (roomId) => {
@@ -174,6 +173,15 @@ socket.on('chat_message', (msg) => {
 
     const SMS = new Message(msg.roomId, sender, msg.timestamp, msg.text, msg.sentByOperator)
     // if (currentRoomId === msg.roomId && !SMS.sentByOperator) {
+
+    
+    ROOMS.forEach(room => {
+        if (room.roomId === SMS.roomId) {
+            room.appendChatHistory(SMS)
+        }
+    });
+
+    UpdateSessionStorageROOMS() 
     SMS.DisplayChatMessage()
     // }
 });
@@ -219,12 +227,15 @@ socket.on('chat_history', (history) => {
     });
 
     ROOMS.forEach(room => {
-        if (room.roomId === history[0].roomId) {
+        if (history[0] && room.roomId === history[0].roomId) {
             room.setChatHistory(messages)
         }
     });
+
     UpdateSessionStorageROOMS()
-    DisplayMessageHistory(messages);
+    if (history[0] &&SELF.currentRoomId === history[0].roomId) {
+        DisplayMessageHistory(messages);
+    }
 });
 
 
