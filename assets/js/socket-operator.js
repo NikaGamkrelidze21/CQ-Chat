@@ -244,6 +244,11 @@ socket.on('chat_history', (history) => {
 // console.log("emitting get_operator_rooms")
 
 $(document).ready(function () {
+    $('textarea').on('keydown', function(){
+      alert("Asdasd")
+      });
+
+   
     $("#authentication-form").on('submit', async function asy(e) {
         e.preventDefault();
         var form = $(this);
