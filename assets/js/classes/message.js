@@ -1,4 +1,7 @@
-class Message {
+import { getRandomColor } from "../components/random-color.js";
+import { SELF, ROOMS, socket} from "../socket-operator.js"
+
+export default class Message {
     constructor(roomId, sender, time, text, sentByOperator) {
         this.roomId = roomId;
         this.sender = sender;
@@ -39,14 +42,14 @@ class Message {
         <div class="message">
         <div class="message-wrapper">
             <div class="message-content">
-                <h6 class="text-dark">${this.sender}</h6>
+                <h6 class="text-dark">${this.sender.name || undefined }</h6>
                 <span>${this.text}</span>
             </div>
         </div>
         
         <div class="message-options">
-            <div class="avatar avatar-sm" style="background-color: ${this.avatarColor}; display: flex; justify-content: center; align-items: center; font-size: x-large; outline: 0.5rem solid white;" >
-                ${this.sender.charAt(0)}
+            <div class="avatar avatar-sm" style="background-color: ${this.sender.avatarColor}; display: flex; justify-content: center; align-items: center; font-size: x-large; outline: 0.5rem solid white;" >
+                ${this.sender.name.charAt(0)}
             </div>
             <span class="message-date">${this.time}</span>
             <div class="dropdown">
@@ -144,7 +147,7 @@ class Message {
             <div class="message-content">${this.text}</div>
         </div>
         <div class="message-options">
-            <div class="avatar avatar-sm" style="background-color: ${this.avatarColor}; display: flex; justify-content: center; align-items: center; font-size: x-large; outline: 0.5rem solid white;" >${this.sender.charAt(0)}</div>
+            <div class="avatar avatar-sm" style="background-color: ${this.sender.avatarColor}; display: flex; justify-content: center; align-items: center; font-size: x-large; outline: 0.5rem solid white;" >${this.sender.name.charAt(0)}</div>
     
             <span class="message-date">${this.time}</span>
             <span class="message-status">Edited</span>
@@ -287,51 +290,6 @@ class Message {
     SendMessage() {
         console.log("=> SendMessage()", this.GetMessageParams())
         this.SendMessageEmit()
-        this.DisplayChatMessage()
+        // this.DisplayChatMessage()
     }
-
-
-}
-
-
-function ValidateSending(sender, text, sentByOperator, time, currentRoomId) {
-    console.log("=> ValidateSending()", sender, text, sentByOperator, time)
-    if (sender && text && sentByOperator && time && currentRoomId) {
-        console.log("=> ValidateSending() => true")
-        return true
-    }
-    else {
-        console.log("=> ValidateSending() => false")
-        return false
-    }
-}
-
-function DisplayMessageHistory(messages) {
-    console.log("=> DisplayMessageHistory()", messages)
-
-    messages.forEach((message) => {
-        const SMS = new Message(message.roomId, message.sender, message.time, message.message, message.sentByOperator);
-        SMS.DisplayChatMessage();
-    })
-}
-
-function SendMessageButtonHandler() {
-    console.log("=> SendMessageButtonHandler()")
-    try {
-        let sender = storedSession.name;
-        let text = $("#messageInput").val();
-        let sentByOperator = sessionStorage.getItem("operatorSession") ? true : false;
-        let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        // Generating Message Object Params
-        if (ValidateSending(sender, text, sentByOperator, time, currentRoomId)) {
-            const SMS = new Message(currentRoomId, sender, time, text, sentByOperator);
-            SMS.SendMessage();
-        }
-    } catch (error) {
-        console.error(error)
-    }
-
-    // constructing Message Object
-
 }

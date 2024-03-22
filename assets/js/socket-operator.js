@@ -1,14 +1,24 @@
+import { SendMessageButtonHandler, DisplayMessageHistory, ValidateSending } from "./handlers/chat-event-handler.js"
+import { DisplayChatList } from "./handlers/chat-list-handlers.js"
+import Message from "./classes/message.js";
+import { Operator, Client } from "./classes/users.js";
+import { ChatListItem, ChatList } from "./classes/chat-list.js";
+import { Room, RoomMember } from "./classes/room.js";
+
 var socket = io('https://chat.communiq.ge/namespace1',
     { transports: ['websocket'] });
 
 let name = null;
-let currentRoomId = null;
+var currentRoomId = null;
 
 const storedSession = JSON.parse(sessionStorage.getItem('operatorSession')) || {};
 console.log('storedSession', storedSession)
 name = storedSession.name;
 let number = storedSession.number;
 let sessionID = storedSession.sessionID;
+let SELF = new Operator()
+let ROOMS = []
+
 
 if (name && number) {
     socket.auth = {
@@ -17,6 +27,7 @@ if (name && number) {
         number: number,
         type: "operator",
     };
+    SELF = new Operator(JSON.parse(sessionStorage.getItem('user')))
 
     socket.connect();
 
@@ -26,7 +37,6 @@ if (name && number) {
         socket.emit('get_operator_rooms');
     }
 }
-
 
 async function submitAuthFormOperator(username, number) {
     if (username && number) {
@@ -43,6 +53,23 @@ async function submitAuthFormOperator(username, number) {
     }
 };
 
+function UpdateSessionStorageUSER(self = SELF) {
+    console.log("() => UpdateSessionStorage()")
+    sessionStorage.setItem('user', JSON.stringify(self));
+}
+
+function GetSessionStorageUSER() {
+    console.log("() => GetSessionStorage()")
+    return JSON.parse(sessionStorage.getItem('user')) || {};
+}
+
+function UpdateSessionStorageROOMS() {
+    console.log("() => UpdateSessionStorageROOMS()", ROOMS)
+    sessionStorage.setItem('rooms', JSON.stringify(ROOMS));
+}
+
+
+export { GetSessionStorageUSER, UpdateSessionStorageUSER, UpdateSessionStorageROOMS, SELF, ROOMS, socket }
 
 // SOCKET LISTENERS ------------------------------------------------------------------
 socket.on('client_disconnected', (roomId) => {
@@ -73,8 +100,13 @@ socket.on('authenticated', (name, number, sessionID) => {
         // TODO why this is here ? 
         sessionStorage.setItem('operatorSession', JSON.stringify({ name, number, sessionID }));
 
-        if (window.location.pathname.split('/').pop() == "signin.html") {
+        SELF.setName(name);
+        SELF.setNumber(number);
+        SELF.setSessionID(sessionID);
 
+        UpdateSessionStorageUSER()
+
+        if (window.location.pathname.split('/').pop() == "signin.html") {
             window.location.href = "chat-operator.html";
         }
     } else {
@@ -93,10 +125,28 @@ socket.on('update', () => {
 socket.on('operator_rooms_list', (rooms) => {
     console.log("socket.on('operator_rooms_list')", rooms)
 
-    DisplayChatList(rooms)
+    if (rooms) {
 
-    if (currentRoomId) {
-        socket.emit('get_chat_history', { roomId: currentRoomId });
+        ROOMS = rooms.map((room) => {
+            return new Room(
+                room.roomId,
+                room.status,
+
+                {
+                    client: new Client(room.clientName, room.clientNumber, room.status),
+                    operator: new Operator(SELF.name, SELF.number, SELF.sessionID)
+                }
+
+            )
+        });
+
+        UpdateSessionStorageROOMS()
+
+        DisplayChatList(ROOMS)
+
+        if (currentRoomId) {
+            socket.emit('get_chat_history', { roomId: currentRoomId });
+        }
     }
 });
 
@@ -108,11 +158,24 @@ socket.on('join_room', (roomId) => {
 socket.on('chat_message', (msg) => {
     console.log("socket.on('chat_message')", msg)
 
-    const SMS = new Message(msg.roomId, msg.sender, msg.time, msg.text, msg.sentByOperator)
+    let sender = null;
 
-    if (currentRoomId === msg.roomId && !SMS.sentByOperator) {
-        SMS.DisplayChatMessage()
+    if (msg.sentByOperator) {
+        sender = SELF
+    } else {
+        ROOMS.forEach(element => {
+            if (element.roomId === msg.roomId) {
+                sender = element.members.client
+            }
+        });
     }
+
+    console.log("sender", sender)
+
+    const SMS = new Message(msg.roomId, sender, msg.timestamp, msg.text, msg.sentByOperator)
+    // if (currentRoomId === msg.roomId && !SMS.sentByOperator) {
+    SMS.DisplayChatMessage()
+    // }
 });
 
 socket.on('client_typing', (roomId) => {
@@ -130,7 +193,21 @@ socket.on('chat_history', (history) => {
     console.log("socket.on('chat_history')", history);
 
     const messages = history.map((msg) => {
-        const date = new Date(msg.timestamp)
+        let sender = null
+
+        if (msg.sentByOperator) {
+            sender = SELF
+        } else {
+
+            ROOMS.forEach(element => {
+                if (element.roomId === msg.roomId) {
+                    sender = element.members.client; // Add a colon here
+                }
+            });
+        }
+        console.log("sender", sender);
+
+        return new Message(msg.roomId, sender, msg.timestamp, msg.text, msg.sentByOperator)
         return {
             roomId: msg.roomId,
             sender: msg.sender,
@@ -141,12 +218,18 @@ socket.on('chat_history', (history) => {
         }
     });
 
+    ROOMS.forEach(room => {
+        if (room.roomId === history[0].roomId) {
+            room.setChatHistory(messages)
+        }
+    });
+    UpdateSessionStorageROOMS()
     DisplayMessageHistory(messages);
 });
 
 
-socket.emit('get_operator_rooms');
-
+// socket.emit('get_operator_rooms');
+// console.log("emitting get_operator_rooms")
 
 $(document).ready(function () {
     $("#authentication-form").on('submit', async function asy(e) {
