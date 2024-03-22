@@ -206,6 +206,8 @@ $(document).ready(function () {
 
     // Emojione Area
     $("#messageInput").emojioneArea();
+
+
 });
 
 

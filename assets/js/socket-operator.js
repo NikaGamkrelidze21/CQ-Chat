@@ -8,17 +8,18 @@ import { Room, RoomMember, SelectedRoom } from "./classes/room.js";
 var socket = io('https://chat.communiq.ge/namespace1',
     { transports: ['websocket'] });
 
-let name = null;
-var currentRoomId = null;
-
 const storedSession = JSON.parse(sessionStorage.getItem('operatorSession')) || {};
-console.log('storedSession', storedSession)
-name = storedSession.name;
+let name = null;
+let currentRoomId = null;
 let number = storedSession.number;
 let sessionID = storedSession.sessionID;
 let SELF = new Operator()
 let ROOMS = []
-var SELECTEDROOM = new SelectedRoom()
+let SELECTEDROOM = new SelectedRoom()
+
+console.log('storedSession', storedSession)
+
+name = storedSession.name;
 
 if (name && number) {
     socket.auth = {
@@ -28,12 +29,13 @@ if (name && number) {
         type: "operator",
     };
     SELF = new Operator(JSON.parse(sessionStorage.getItem('user')))
-
+    
     socket.connect();
-
+    
     if (window.location.pathname.split('/').pop() == "signin.html") {
         window.location.href = "chat-operator.html";
     } else {
+        console.log("name && number", name, number)
         socket.emit('get_operator_rooms');
     }
 }
@@ -93,7 +95,6 @@ socket.on('client_connected_successfully', (data) => {
 
 socket.on('authenticated', (name, number, sessionID) => {
     console.log("socket.on('authenticated')", name, number, sessionID)
-    console.log("opnaaaaaaaaaaaaaaaaaaaaaaaaa")
     if (sessionID) {
         console.log('Authenticated with sessionID:', sessionID);
         // TODO why this is here ? 
@@ -174,14 +175,14 @@ socket.on('chat_message', (msg) => {
     const SMS = new Message(msg.roomId, sender, msg.timestamp, msg.text, msg.sentByOperator)
     // if (currentRoomId === msg.roomId && !SMS.sentByOperator) {
 
-    
+
     ROOMS.forEach(room => {
         if (room.roomId === SMS.roomId) {
             room.appendChatHistory(SMS)
         }
     });
 
-    UpdateSessionStorageROOMS() 
+    UpdateSessionStorageROOMS()
     SMS.DisplayChatMessage()
     // }
 });
@@ -233,7 +234,7 @@ socket.on('chat_history', (history) => {
     });
 
     UpdateSessionStorageROOMS()
-    if (history[0] &&SELF.currentRoomId === history[0].roomId) {
+    if (history[0] && SELF.currentRoomId === history[0].roomId) {
         DisplayMessageHistory(messages);
     }
 });
@@ -251,4 +252,7 @@ $(document).ready(function () {
 
         submitAuthFormOperator(name, number)
     });
+
+    $(".chat-header").hide()
+    $(".chat-footer").hide()
 });

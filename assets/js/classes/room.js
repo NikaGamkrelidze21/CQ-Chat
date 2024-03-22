@@ -29,7 +29,26 @@ class SelectedRoom {
   setRoom(room) {
     this.room = room;
     sessionStorage.setItem('selectedRoom', JSON.stringify(room));
+    $(".chat-header").show()
+    $(".chat-footer").show()
+    $("#chat-header-name").empty()
+    $("#chat-header-name").append(`
+    <div class="media chat-name align-items-center text-truncate">
+                                <div class="avatar text-light d-none d-sm-inline-block mr-3"
+                                    style="background-color: ${room.members.client.avatarColor}">
+                                    <span style="font-size: x-large; font-weight: 600;">
+                                        A
+                                        <!-- <img class="injectable" src="./../assets/media/heroicons/outline/user-group.svg" alt=""> -->
+                                    </span>
+                                </div>
+
+                                <div class="media-body align-self-center ">
+                                    <h6 class="text-truncate mb-0">${room.members.client.name}</h6>
+                                </div>
+                            </div>
+    `)
   } 
+
 
 }
 
