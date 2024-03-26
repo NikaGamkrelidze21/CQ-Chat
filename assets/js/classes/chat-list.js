@@ -1,3 +1,4 @@
+import { DisplayMessageHistory } from "../handlers/chat-event-handler.js";
 
 export class ChatListItem {
     constructor(self, room, unreadMessagesAmount = 0) {
@@ -12,6 +13,7 @@ export class ChatListItem {
         this.unreadMessagesAmount = unreadMessagesAmount;
         this.avatarColor = room.client.avatarColor;
 
+        this.room = room;
         this.self = self;
     }
 
@@ -32,7 +34,7 @@ export class ChatListItem {
     }
     // TODO somehting do with displahying
     ChangeRoom = () => {
-        console.log("() => ChangeRoom()", self, this);
+        console.log("() => ChangeRoom()",  this);
 
         this.self.ROOMS.forEach(element => {
             if (element.roomId === this.roomId) {
@@ -49,16 +51,14 @@ export class ChatListItem {
 
         console.log("messages", messages)  
         
-
-
-        messages.forEach(message => {
-            message.DisplayChatMessage()
-        })
-
-
+        DisplayMessageHistory(messages)
+        this.ChangeChatHeader()
     }
 
-    
+    ChangeChatHeader()  {
+        console.log("() => ChangeChatHeader()", this);
+        $("#chat-header-name").text(this.clientName);
+    }
 
     AppendChatListItem() {
         const template = this.ChatListItemTemplate();

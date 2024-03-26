@@ -32,6 +32,8 @@ export function GeneratingMessage(){
     message.setTime(time)
     
     console.log("=> GeneratingMessage()", message)
+    
+    message.InputCleanup()
     return message
 }
 

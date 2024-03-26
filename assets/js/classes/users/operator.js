@@ -176,7 +176,7 @@ export default class Operator extends User {
                     sender = this
                 } else {
 
-                    ROOMS.forEach(element => {
+                    this.ROOMS.forEach(element => {
                         if (element.roomId === msg.roomId) {
                             sender = element.client; // Add a colon here
                         }
@@ -215,17 +215,19 @@ export default class Operator extends User {
     }
 
     sendMessage() {
+
         let message = GeneratingMessage()
         message.setSender(this)
         message.setSentByOperator(true)
         message.setRoomId(this.currentRoom.roomId)
 
+        console.log(this.currentRoom)
         console.log("(operator)=> sendMessageEmit()", message)
         if (this.ValidateSending(message)) {
             console.log("socket.emit(operator_private_chat_message)", message)
             this.socket.emit('operator_private_chat_message',
                 {
-                    roomId: this.currentRoomId,
+                    roomId: message.roomId,
                     message: message.text,
                     operatorNumber: this.name
                 });

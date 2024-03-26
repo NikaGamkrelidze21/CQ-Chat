@@ -2,7 +2,7 @@ import { getRandomColor } from "../components/random-color.js";
 
 export default class Message {
     // TODO update params (seenBY)
-    constructor(roomId=null, sender=null, time=null, text=null, sentByOperator=null) {
+    constructor(roomId = null, sender = null, time = null, text = null, sentByOperator = null) {
         this.roomId = roomId;
         this.sender = sender;
         this.time = time;
@@ -41,6 +41,7 @@ export default class Message {
     }
 
     InputCleanup() {
+        console.log("=> InputCleanup()")
         $("#messageInput").val("");
         $("#messageInput").text("");
         $(".emojionearea-editor").val("");
@@ -58,7 +59,7 @@ export default class Message {
         <div class="message">
         <div class="message-wrapper">
             <div class="message-content">
-                <h6 class="text-dark">${this.sender.name || undefined }</h6>
+                <h6 class="text-dark">${this.sender.name || undefined}</h6>
                 <span>${this.text}</span>
             </div>
         </div>
@@ -289,7 +290,7 @@ export default class Message {
     }
 
     SendMessageEmit() {
-        console.log("=> SendMessageEmit()", this.GetMessageParams())
+        console.log("=> SendMessageEmit()", this)
 
         // let operatorNumber = sessionStorage.getItem('operatorSession').number;
         // console.log("operatorNumber", operatorNumber);
@@ -298,14 +299,16 @@ export default class Message {
             {
                 roomId: this.roomId,
                 message: this.text,
-                operatorNumber: this.sender
+                operatorNumber: this.sender.name
             });
         console.log("emit('operator_private_chat_message')", "roomId:", this.roomId, "operatorNumber:", this.sender, 'message:', this.text)
+        this.InputCleanup()
     }
 
     SendMessage() {
         console.log("=> SendMessage()", this.GetMessageParams())
         this.SendMessageEmit()
-        // this.DisplayChatMessage()
+        this.InputCleanup()
+        this.DisplayChatMessage()
     }
 }
