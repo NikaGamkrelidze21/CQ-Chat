@@ -1,7 +1,6 @@
 import User from './user.js';
 import { Room } from '../room.js';
-import { DisplayChatList } from '../../handlers/chat-list-handlers.js';
-import {DisplayMessageHistory} from '../../handlers/chat-event-handler.js';
+import { DisplayMessageHistory } from '../../handlers/chat-event-handler.js';
 import { GeneratingMessage } from '../../handlers/chat-event-handler.js';
 import Message from '../message.js';
 
@@ -24,6 +23,23 @@ export default class Operator extends User {
 
     }
 
+    abandonRoom(roomId) {
+        console.log("=> abandonRoom()", roomId)
+        this.socket.emit('end_chat_from_operator', roomId);
+        this.currentRoom = null
+        this.clearChat()
+        this.socket.emit('get_operator_rooms');
+
+    }
+
+    clearChat() {
+        console.log("=> clearChat()")
+        $(".chat-header").hide()
+        $(".chat-footer").hide()
+        $(".chat-content").empty()
+        $("#chatContactTab").empty()
+    }
+
     socketAuthentification() {
         console.log('(Operator) => socketAuthentification()');
         this.socket.auth = {
@@ -34,9 +50,9 @@ export default class Operator extends User {
         };
 
         this.socket.connect();
-        console.log("socket.auth", this.socket)
-
+        
         setTimeout(() => {
+            // console.log("socket.auth", this.socket)
             this.socket.emit('get_operator_rooms');
             console.log("emitting get_operator_rooms", this.socket)
         }, 1000);
@@ -72,16 +88,23 @@ export default class Operator extends User {
                     newRoom.setRoomId(room.roomId)
                     newRoom.setRoomStatus(room.status)
                     newRoom.setClient(new User(room.clientName, room.clientNumber))
+                    newRoom.setOperator(this)
                     return newRoom
                 });
                 console.log("ROOMS", this.ROOMS)
+
+                if (this.ROOMS.length > 0) {
+                    this.ROOMS.forEach(room => {
+                        room.displayRoom()
+                    })
+                }
 
                 if (this.currentRoom) {
                     this.socket.emit('get_chat_history', { roomId: this.currentRoom.roomId });
                 }
             }
 
-            DisplayChatList(this, this.ROOMS)
+            // DisplayChatList(this, this.ROOMS)
         });
 
 
@@ -94,15 +117,24 @@ export default class Operator extends User {
             console.log("socket.on('client_connected')", roomId)
         });
 
+        // TODO need to revieve {clientName, clientNumber, clientId, roomId, status}
+        // on this emit
         this.socket.on('client_connected_successfully', (data) => {
-            console.log('client connected successfully', data)
-            // sendDefaultMessage(this, data).bind(this);
-            console.log("() => sendDefaultMessage()", data.roomId, self.name)
+            console.log('socket.on(client connected successfully)', data)
+            let temp = new Room()
+            temp.setRoomId(data.roomId)
+            temp.setRoomStatus(data.status)
+            temp.setClient(new User(data.clientId))
+            temp.setOperator(this)
+            temp.displayRoom()
+            this.ROOMS.push(temp)
+
+            console.log("() => sendDefaultMessage()", data.roomId, this)
             this.socket.emit('operator_private_chat_message',
                 {
                     roomId: data.roomId,
                     message: "გამარoჯობა, რით შემიძლია დაგეხმაროთ?",
-                    operatorNumber: self.name
+                    operatorNumber: this.name
                 });
         });
 
@@ -151,7 +183,7 @@ export default class Operator extends User {
                     SMS.DisplayChatMessage()
                 }
             });
-            
+
             // }
         });
 

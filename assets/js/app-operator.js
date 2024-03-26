@@ -1,6 +1,4 @@
 import Operator from '../js/classes/users/operator.js';
-// var socket = io('https://chat.communiq.ge/namespace1', { transports: ['websocket'] });
-
 
 var SELF = null
 var name = null
@@ -14,8 +12,6 @@ var chatPage = null
 
 storedSession = JSON.parse(sessionStorage.getItem('operatorSession'));
 
-
-
 console.log('storedSession', storedSession)
 
 if (storedSession != null) {
@@ -23,52 +19,16 @@ if (storedSession != null) {
     number = storedSession.number;
     sessionID = storedSession.sessionID;
     SELF = new Operator(name, number, sessionID)
+    if (window.location.pathname.split('/').pop() == "signin.html") {
+        window.location.href = "chat.html";
+    }
 }
 
-
-
-// const storedSession = JSON.parse(sessionStorage.getItem('operatorSession')) || {};
-// console.log('storedSession', storedSession)
-
-// let SELF = null
-// let name = null
-// let number = null;
-// let sessionID = null;
-
-
-// name = storedSession.name;
-// number = storedSession.number;
-// sessionID = storedSession.sessionID;
-
-// if (name && number && sessionID) {
-//     if (window.location.pathname.split('/').pop() == "signin.html") {
-//         SELF = new Operator(name, number, sessionID)
-//         window.location.href = "chat-operator.html";
-//         console.log("SELF", SELF)
-//     } else if (window.location.pathname.split('/').pop() == "signin-client.html") {
-//         SELF = new Client(name, number, sessionID)
-//         window.location.href = "chat-client.html";
-//         console.log("SELF", SELF)
-
-//     } else if (window.location.pathname.split('/').pop() == "chat-operator.html") {
-//         SELF = new Operator(name, number, sessionID)
-//         console.log('reconnecting', SELF)
-//     }
-
-//     else if (window.location.pathname.split('/').pop() == "chat-client.html") {
-//         SELF = new Client(name, number, sessionID)
-//         console.log('reconnecting', SELF)
-//     }
-// }
 
 async function submitAuthFormOperator(username, number) {
     console.log("(Operator) => submitAuthFormOperator()", username, number)
 
-    if (username && number) {
-        SELF = new Operator(username, number)
-
-        // SELF.socket.connect();
-    }
+    if (username && number) { SELF = new Operator(username, number) }
 };
 
 
@@ -83,8 +43,7 @@ $(document).ready(function () {
 
     $("#end-chat-button").on('click', function () {
         console.log("(click) => end-chat-button")
-        SELF.socket.emit('end_chat_from_operator', SELF.currentRoom.roomId);
-        console.log("SELF.socket.emit('end_chat_from_operator')", SELF.currentRoom.roomId)
+        SELF.abandonRoom(SELF.currentRoom.roomId)
     });
 
     $("#authentication-form").on('submit', async function asy(e) {
@@ -282,7 +241,6 @@ $(document).ready(function () {
     })
 
 
-    // Todo task done
     $('.todo-item input[type="checkbox"]').click(function () {
         if ($(this).is(":checked")) {
             $(this).parents('.todo-item').addClass('todo-task-done');

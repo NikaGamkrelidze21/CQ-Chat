@@ -98,4 +98,8 @@ function SendMessageButtonHandler() {
 
 }
 
+function AbandonRoom() {
+    
+}
+
 export { SendMessageButtonHandler_Client, SendMessageButtonHandler_Operator, DisplayMessageHistory, ValidateSending}

@@ -1,8 +1,5 @@
 import Client from "./classes/users/client.js";
 
-// var socket = io('https://chat.communiq.ge/namespace1', { transports: ['websocket'] });
-
-
 var SELF = null
 var name = null
 var number = null;
@@ -15,15 +12,16 @@ var chatPage = null
 
 storedSession = JSON.parse(sessionStorage.getItem('clientSession'));
 
-
-
 console.log('storedSession', storedSession)
 
 if (storedSession != null) {
     name = storedSession.name;
     number = storedSession.number;
-    // sessionID = storedSession.sessionID;
-    SELF = new Client(name, number) // sessionID
+    sessionID = storedSession.sessionID;
+    SELF = new Client(name, number, sessionID)
+    if (window.location.pathname.split('/').pop() == "signin.html") {
+        window.location.href = "chat.html";
+    }
 }
 
 
@@ -67,7 +65,6 @@ async function submitAuthFormClient(username, number) {
 
     if (username && number) {
         SELF = new Client(username, number)
-        SELF.socket.connect();
     }
 };
 

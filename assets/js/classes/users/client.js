@@ -1,12 +1,14 @@
 import { Room } from '../room.js';
 import User from './user.js';
-import Operator from './operator.js';
+import { GeneratingMessage } from '../../handlers/chat-event-handler.js';
 
 export default class Client extends User {
     constructor(name, number, sessionID) {
         super(name, number, sessionID);
         this.type = "client";
-        this.room = new Room(null, null, null, null, this);
+        this.room = new Room();
+        this.room.setClient(this);
+
         this.setupSocketListeners();
         this.socketAuthentification();
     }
@@ -20,17 +22,42 @@ export default class Client extends User {
             type: "client",
         };
         this.socket.connect();
+        setTimeout(() => {
+            console.log("auth", this.socket)
+            this.socket.emit('client_rooms');
+        }, 1000);
     }
 
-    sendMessage(message) {
-        console.log("(client)=> sendMessageEmit()", message.GetMessageParams())
+    sendMessage() {
+        console.log("(Client) => sendMessage()", this)
+        let message = GeneratingMessage()
+        message.setSender(this)
+        message.setSentByOperator(false)
+        message.setRoomId(this.room.roomId)
 
-        this.socket.emit('client_private_chat_message',
+        console.log(this.currentRoom)
+        console.log("(operator)=> sendMessageEmit()", message)
+        if (this.ValidateSending(message)) {
+            this.socket.emit('client_private_chat_message',
             {
-                roomId: this.currentRoomId,
+                roomId: message.roomId,
                 message: message.text,
-                operatorNumber: this.name
+                sessionID: this.sessionID
             });
+            console.log("socket.emit(client_private_chat_message)", message)
+        }
+    }
+
+    ValidateSending(message) {
+        console.log("=> ValidateSending()", message)
+        if (message.sender && message.text && !message.sentByOperator && message.time && message.roomId) {
+            console.log("=> ValidateSending() => true")
+            return true
+        }
+        else {
+            console.log("=> ValidateSending() => false")
+            return false
+        }
     }
 
     setupSocketListeners() {
@@ -96,6 +123,8 @@ export default class Client extends User {
 
         this.socket.on('load_waiting_page', () => {
             console.log("socket.on('load_waiting_page')")
+            sessionStorage.setItem("chat-in-process", "false");
+            console.log("sessionStorage", sessionStorage)
             // loadWaitingPage()
         });
 
@@ -125,6 +154,7 @@ export default class Client extends User {
             rooms.forEach((room) => {
                 this.room.setRoomId(room.roomId);
                 this.room.setRoomStatus(room.status);
+                this.room.setOperator(new User(room.name));
                 console.log("this.room", this.room)
             });
         });
@@ -165,7 +195,7 @@ export default class Client extends User {
 
         this.socket.on('operator_ended_chat', () => {
             console.log("socket.on('operator_ended_chat')")
-            socket.emit('leave_room', currentRoomId);
+            this.socket.emit('leave_room', currentRoomId);
             console.log("socket.emit('leave_room'", currentRoomId)
             currentRoomId = null;
 

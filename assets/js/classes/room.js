@@ -1,12 +1,9 @@
+
 class Room {
-  constructor(roomId = null, roomStatus = null, members = [], chatHistory = [], client = null, clientJoinedTime = null, operator = null, operatorJoinedTime = null, administrator = null, administratorJoinedTime = null, support = null, supportJoinedTime = null, createdTime = null, createdBy = null, finishedTime = null, finishedBy = null, feedback = null, callback = null, transfered = false, transferedTime = null, transferedTo = null) {
+  constructor(roomId = null, roomStatus = null, chatHistory = [], client = null, clientJoinedTime = null, operator = null, operatorJoinedTime = null, administrator = null, administratorJoinedTime = null, support = null, supportJoinedTime = null, createdTime = null, createdBy = null, finishedTime = null, finishedBy = null, feedback = null, callback = null, transfered = false, transferedTime = null, transferedTo = null) {
     this.roomId = roomId;
     this.roomStatus = roomStatus;
     this.chatHistory = chatHistory;
-
-    // TODO: remove this members array
-    this.members = members;
-
     this.client = client;
     this.clientJoinedTime = clientJoinedTime;
 
@@ -99,6 +96,83 @@ class Room {
   getChatHistory() { return this.chatHistory; }
   appendChatHistory(message) { this.chatHistory.push(message); }
   setChatHistory(chatHistory) { this.chatHistory = chatHistory }
+
+
+  displayRoom() {
+    console.log("=> displayRoom()")
+    // chatContactTab
+    $("#chatContactTab").append(this.roomListItemTemplate());
+    $(`#${this.roomId}`).on('click', () => {
+      console.log("(click) => displayRoom()", this)
+      this.operator.currentRoom = this
+      console.log("new current room", this)
+
+      this.showChatHeaderFooter()
+
+      this.setUpRoomHeader()
+
+      this.getRoomChatHistory()
+      // this.displayChatHistory()
+    })
+  }
+
+  setUpRoomHeader() {
+    console.log("() => setUpRoomHeader()", this)
+    $("#chat-header-name").empty()
+    $("#chat-header-name").text(this.client.name)
+  }
+
+  emptyChatHistory() {
+    console.log("() => emptyChatHistory()", this)
+    $("#chat-history").empty()
+  }
+
+  emptyChatInput() {
+    console.log("() => emptyChatInput()", this)
+    $("#chat-input").val('')
+  }
+
+  emptyRoomList() {
+    console.log("() => emptyRoomList()", this)
+    $("#chatContactTab").empty()
+  }
+
+  hideChatHeaderFooter() {
+    console.log("() => hideChatHeaderFooter()", this)
+    $(".chat-header").hide()
+    $(".chat-footer").hide()
+  }
+
+  showChatHeaderFooter() {
+    console.log("() => showChatHeaderFooter()", this)
+    $(".chat-header").show()
+    $(".chat-footer").show()
+  }
+
+  getRoomChatHistory() {
+    console.log("() => getRoomChatHistory()", this)
+    this.operator.socket.emit('get_chat_history', { roomId: this.roomId });
+  }
+
+  roomListItemTemplate() {
+    console.log("() => ChatListItemTemplate()", this);
+    return `
+    <li class="contacts-item friends" id=${this.roomId}>
+        <div class="avatar avatar-online d-flex justify-content-center  justify-center align-items-center" style="background-color: ${this.client.avatarColor}">
+            ${this.client ? this.client.name[0].toUpperCase() : '*'}
+        </div>
+        <div class="contacts-content">
+            <div class="contacts-info">
+                <h6 class="chat-name text-truncate">${this.client.name}</h6>
+                <div class="chat-time">${this.lastMessageTime}</div>
+            </div>
+            <div class="contacts-texts">
+                <p class="text-truncate">${this.lastMessage}</p>
+            </div>
+        </div>
+</li>
+    `
+  }
 }
 
 class SelectedRoom {
@@ -132,7 +206,6 @@ class SelectedRoom {
       </div>
     `)
   }
-
 
 }
 
