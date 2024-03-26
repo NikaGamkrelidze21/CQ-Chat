@@ -1,3 +1,5 @@
+import { SendMessageButtonHandler_Client } from "./handlers/chat-event-handler.js";
+
 var socket = io('https://chat.communiq.ge/namespace1',
     { transports: ['websocket'] });
 
@@ -8,6 +10,9 @@ let number = storedSession.number;
 let sessionID = storedSession.sessionID;
 
 let operatorName = null
+
+
+
 
 if (name && number && sessionStorage.getItem("chat-in-process") === "true") {
     socket.auth = {
@@ -22,6 +27,24 @@ if (name && number && sessionStorage.getItem("chat-in-process") === "true") {
 
 
 
+
+async function submitAuthFormClient(username, number) {
+    if (username && number) {
+        socket.auth = {
+            name: username,
+            number: number,
+            sessionID: "",
+            type: "client",
+        };
+
+        let sessionID = socket.auth.sessionID;
+
+        await socket.connect();
+    }
+};
+
+export { socket, submitAuthFormClient }
+
 socket.on('timeout_callback', () => {
     console.log("socket.on('timeout_callback'")
     loadTimeoutPage()
@@ -30,8 +53,8 @@ socket.on('timeout_callback', () => {
 socket.on('authenticated', (name, number, sessionID) => {
     console.log("socket.on('authenticated')", name, number, sessionID);
     if (sessionID) {
-        console.log('Authenticated with sessionID:', sessionID);
         sessionStorage.setItem('clientSession', JSON.stringify({ name, number, sessionID }));
+        window.location.href = "chat-client.html";
     } else {
         console.error('Authentication failed');
     }
@@ -137,4 +160,20 @@ currentRoomId = null;
 socket.on('client_ended_chat', () => {
 console.log("socket.on('client_ended_chat')")
 currentRoomId = null;
+});
+
+
+$(document).ready(function () {
+    
+    $("#send-message-button").on('click', () => SendMessageButtonHandler_Client());
+
+    $("#authentication-form").on('submit', async function asy(e) {
+        e.preventDefault();
+        var form = $(this);
+        var name = form.find('input[id="auth-input-name"]').val();
+        var number = form.find('input[id="auth-input-number"]').val();
+
+        submitAuthFormClient(name, number)
+    });
+
 });

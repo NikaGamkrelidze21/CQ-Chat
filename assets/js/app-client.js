@@ -1,7 +1,4 @@
 import Client from "./classes/users/client.js";
-import Operator from "./classes/users/operator.js";
-import { LandingAuth } from "./handlers/landing.js";
-import {SendMessageButtonHandler_Operator, SendMessageButtonHandler_Client} from "./handlers/chat-event-handler.js";
 
 // var socket = io('https://chat.communiq.ge/namespace1', { transports: ['websocket'] });
 
@@ -15,31 +12,8 @@ var authentificationPage = null
 var storedSession = null
 var chatPage = null
 
-switch (window.location.pathname.split('/').pop()) {
-    case "signin.html":
-        authentificationPage = "operator"
-        break;
-    case "signin-client.html":
-        authentificationPage = "client"
-        break;
-    case "chat-operator.html":
-        chatPage = "operator"
-        break;
-    case "chat-client.html":
-        chatPage = "client"
-        break;
 
-    default:
-        chatPage = null
-        authentificationPage = null
-        break;
-}
-
-if (authentificationPage == "operator" || chatPage == "operator") {
-    storedSession = JSON.parse(sessionStorage.getItem('operatorSession'));
-} else {
-    storedSession = JSON.parse(sessionStorage.getItem('clientSession'));
-}
+storedSession = JSON.parse(sessionStorage.getItem('clientSession'));
 
 
 
@@ -48,30 +22,11 @@ console.log('storedSession', storedSession)
 if (storedSession != null) {
     name = storedSession.name;
     number = storedSession.number;
-    sessionID = storedSession.sessionID;
+    // sessionID = storedSession.sessionID;
+    SELF = new Client(name, number) // sessionID
 }
 
 
-if (name && number && sessionID) {
-    if (authentificationPage == "operator") {
-        SELF = new Operator(name, number, sessionID)
-        window.location.href = "chat-operator.html";
-        console.log("SELF", SELF)
-    } else if (authentificationPage == "client") {
-        SELF = new Client(name, number, sessionID)
-        window.location.href = "chat-client.html";
-        console.log("SELF", SELF)
-
-    } else if (chatPage == "operator") {
-        SELF = new Operator(name, number, sessionID)
-        console.log('reconnecting', SELF)
-    }
-
-    else if (chatPage == "client") {
-        SELF = new Client(name, number, sessionID)
-        console.log('reconnecting', SELF)
-    }
-}
 
 // const storedSession = JSON.parse(sessionStorage.getItem('operatorSession')) || {};
 // console.log('storedSession', storedSession)
@@ -107,16 +62,6 @@ if (name && number && sessionID) {
 //     }
 // }
 
-async function submitAuthFormOperator(username, number) {
-    console.log("(Operator) => submitAuthFormOperator()", username, number)
-
-    if (username && number) {
-        SELF = new Operator(username, number)
-
-        SELF.socket.connect();
-    }
-};
-
 async function submitAuthFormClient(username, number) {
     console.log("(Client) => submitAuthFormClient()", username, number)
 
@@ -126,15 +71,6 @@ async function submitAuthFormClient(username, number) {
     }
 };
 
-function DetectUserType() {
-    if (window.location.pathname.split('/').pop() == "signin.html" || window.location.pathname.split('/').pop() == "chat-operator.html" ){
-        console.log("() => DetectUserType() operator")
-        return "operator"
-    } else {
-        console.log("() => DetectUserType() client")
-        return "client"
-    }
-}
 
 
 
@@ -153,11 +89,7 @@ $(document).ready(function () {
         var name = $('input[id="auth-input-name"]').val();
         var number = $('input[id="auth-input-number"]').val();
 
-        if (DetectUserType() == "operator") {
-            submitAuthFormOperator(name, number)
-        } else if (DetectUserType() == "client") {
-            submitAuthFormClient(name, number)
-        }
+        submitAuthFormClient(name, number)
     });
 
     $("#send-message-button").on('click', function () {
@@ -165,8 +97,8 @@ $(document).ready(function () {
     });
 
 
-    // $(".chat-header").hide()
-    // $(".chat-footer").hide()
+    $(".chat-header").hide()
+    $(".chat-footer").hide()
 
     $('#mainNavTab a').on('click', function (e) {
         e.preventDefault()

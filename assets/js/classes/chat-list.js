@@ -1,18 +1,18 @@
-import { SELF, ROOMS, SELECTEDROOM, socket } from "../socket-operator.js";
-import { getRandomColor } from "../components/random-color.js";
 
 export class ChatListItem {
-    constructor(room, unreadMessagesAmount = 0 ) {
+    constructor(self, room, unreadMessagesAmount = 0) {
         console.log("(consstructor) => ChatListItem() ", room);
-        this.clientNumber = room.members.client.number;
-        this.clientName = room.members.client.name;
+        this.clientNumber = room.client.number;
+        this.clientName = room.client.name;
         this.roomId = room.roomId;
         this.status = room.status;
-        
+
         this.lastMessageTime = "Some time ago";
         this.lastMessage = "No messages yet";
         this.unreadMessagesAmount = unreadMessagesAmount;
-        this.avatarColor = room.members.client.avatarColor;
+        this.avatarColor = room.client.avatarColor;
+
+        this.self = self;
     }
 
     GetItemParams() {
@@ -30,26 +30,41 @@ export class ChatListItem {
 
         }
     }
-
+    // TODO somehting do with displahying
     ChangeRoom = () => {
-        console.log("() => ChangeRoom()", this.roomId);
-        SELF.currentRoomId = this.roomId;
-        ROOMS.forEach(element => {
+        console.log("() => ChangeRoom()", self, this);
+
+        this.self.ROOMS.forEach(element => {
             if (element.roomId === this.roomId) {
-                // SELECTEDROOM = element;
-                console.log("element", element, "SELECTEDROOM", SELECTEDROOM);
-                SELECTEDROOM.setRoom(element);
-                // UpdateSessionStorageSELECTEDROOM();
+                console.log("element", element, "SELECTEDROOM", this.self.currentRoom);
+                this.self.setCurrentRoom(element)
             }
         });
-        socket.emit('get_chat_history', { roomId: SELF.currentRoomId });
+        
+        this.self.socket.emit('get_chat_history', { roomId: this.self.currentRoom.roomId });
+        $(".chat-header").show()
+        $(".chat-footer").show()
+        
+        let messages = this.self.currentRoom.chatHistory;
+
+        console.log("messages", messages)  
+        
+
+
+        messages.forEach(message => {
+            message.DisplayChatMessage()
+        })
+
+
     }
+
+    
 
     AppendChatListItem() {
         const template = this.ChatListItemTemplate();
         const component = $(template);
         console.log("() => AppendChatListItem()", component);
-        $(component).on('click', this.ChangeRoom.bind(this) );        
+        $(component).on('click', this.ChangeRoom.bind(this));
         $("#chatContactTab").append(component);
     }
 

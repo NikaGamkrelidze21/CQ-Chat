@@ -1,8 +1,8 @@
 import { getRandomColor } from "../components/random-color.js";
-import { SELF, ROOMS, socket} from "../socket-operator.js"
 
 export default class Message {
-    constructor(roomId, sender, time, text, sentByOperator) {
+    // TODO update params (seenBY)
+    constructor(roomId=null, sender=null, time=null, text=null, sentByOperator=null) {
         this.roomId = roomId;
         this.sender = sender;
         this.time = time;
@@ -10,8 +10,24 @@ export default class Message {
         this.sentByOperator = sentByOperator;
         this.avatarColor = getRandomColor();
     }
-//         const SMS = new Message(message.roomId, message.sender, message.time, message.message, message.sentByOperator);
 
+    setRoomId(roomId) { this.roomId = roomId; }
+    getRoomId() { return this.roomId; }
+
+    setSender(sender) { this.sender = sender; }
+    getSender() { return this.sender; }
+
+    setTime(time) { this.time = time; }
+    getTime() { return this.time; }
+
+    setText(text) { this.text = text; }
+    getText() { return this.text; }
+
+    setSentByOperator(sentByOperator) { this.sentByOperator = sentByOperator; }
+    getSentByOperator() { return this.sentByOperator; }
+
+    setAvatarColor(avatarColor) { this.avatarColor = avatarColor; }
+    getAvatarColor() { return this.avatarColor; }
 
     GetMessageParams() {
         return {
