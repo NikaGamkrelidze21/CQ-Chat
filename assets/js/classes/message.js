@@ -5,6 +5,7 @@ export default class Message {
     constructor(roomId = null, sender = null, time = null, text = null, sentByMe = null) {
         this.roomId = roomId;
         this.sender = sender;
+        // TODO shorten time to HH:MM format
         this.time = time;
         this.text = text;
         this.sentByMe = sentByMe;
