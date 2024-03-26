@@ -1,6 +1,7 @@
 import { Room } from '../room.js';
 import User from './user.js';
 import { GeneratingMessage } from '../../handlers/chat-event-handler.js';
+import Message from '../message.js';
 
 export default class Client extends User {
     constructor(name, number, sessionID) {
@@ -32,25 +33,25 @@ export default class Client extends User {
         console.log("(Client) => sendMessage()", this)
         let message = GeneratingMessage()
         message.setSender(this)
-        message.setSentByOperator(false)
+        message.setSentByMe(true)
         message.setRoomId(this.room.roomId)
 
         console.log(this.currentRoom)
         console.log("(operator)=> sendMessageEmit()", message)
         if (this.ValidateSending(message)) {
             this.socket.emit('client_private_chat_message',
-            {
-                roomId: message.roomId,
-                message: message.text,
-                sessionID: this.sessionID
-            });
+                {
+                    roomId: message.roomId,
+                    message: message.text,
+                    sessionID: this.sessionID
+                });
             console.log("socket.emit(client_private_chat_message)", message)
         }
     }
 
     ValidateSending(message) {
         console.log("=> ValidateSending()", message)
-        if (message.sender && message.text && !message.sentByOperator && message.time && message.roomId) {
+        if (message.sender && message.text && message.time && message.roomId) {
             console.log("=> ValidateSending() => true")
             return true
         }
@@ -176,7 +177,27 @@ export default class Client extends User {
 
         this.socket.on('chat_message', (msg) => {
             console.log("socket.on('chat_message')", msg)
-            // displayChatMessage(msg);
+
+            let sender = null;
+
+            if (!msg.sentByOperator) {
+                sender = this
+            } else {
+                if (this.room.roomId === msg.roomId) {
+                    sender = this.room.operator
+                }
+            }
+
+            console.log("sender", sender)
+
+            const SMS = new Message(msg.roomId, sender, msg.timestamp, msg.text, !msg.sentByOperator)
+
+            if (this.room.roomId === SMS.roomId) {
+                this.room.appendChatHistory(SMS)
+                if (this.room.roomId === SMS.roomId) {
+                    SMS.DisplayChatMessage()
+                }
+            }
         });
 
         this.socket.on('operator_typing', () => {

@@ -2,12 +2,12 @@ import { getRandomColor } from "../components/random-color.js";
 
 export default class Message {
     // TODO update params (seenBY)
-    constructor(roomId = null, sender = null, time = null, text = null, sentByOperator = null) {
+    constructor(roomId = null, sender = null, time = null, text = null, sentByMe = null) {
         this.roomId = roomId;
         this.sender = sender;
         this.time = time;
         this.text = text;
-        this.sentByOperator = sentByOperator;
+        this.sentByMe = sentByMe;
         this.avatarColor = getRandomColor();
     }
 
@@ -23,8 +23,8 @@ export default class Message {
     setText(text) { this.text = text; }
     getText() { return this.text; }
 
-    setSentByOperator(sentByOperator) { this.sentByOperator = sentByOperator; }
-    getSentByOperator() { return this.sentByOperator; }
+    setSentByMe(sentByMe) { this.sentByMe = sentByMe; }
+    getSentByMe() { return this.sentByMe; }
 
     setAvatarColor(avatarColor) { this.avatarColor = avatarColor; }
     getAvatarColor() { return this.avatarColor; }
@@ -35,7 +35,7 @@ export default class Message {
             sender: this.sender,
             timestamp: this.timestamp,
             text: this.text,
-            sentByOperator: this.sentByOperator,
+            sentByMe: this.sentByMe,
             avatarColor: this.avatarColor
         }
     }
@@ -272,13 +272,13 @@ export default class Message {
 
     DisplayChatMessage() {
         console.log("=> DisplayChatMessage()", this.GetMessageParams())
-        if (this.sentByOperator) {
+        if (this.sentByMe) {
             $("#chat-content .container").append(this.SentMessageTemplate());
             this.scrollToBottom()
             this.InputCleanup();
         }
 
-        else if (!this.sentByOperator) {
+        else if (!this.sentByMe) {
             $("#chat-content .container").append(this.RecievedMessageTemplate());
             this.scrollToBottom()
             this.InputCleanup();

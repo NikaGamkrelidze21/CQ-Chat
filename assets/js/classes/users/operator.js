@@ -50,7 +50,7 @@ export default class Operator extends User {
         };
 
         this.socket.connect();
-        
+
         setTimeout(() => {
             // console.log("socket.auth", this.socket)
             this.socket.emit('get_operator_rooms');
@@ -130,12 +130,11 @@ export default class Operator extends User {
             this.ROOMS.push(temp)
 
             console.log("() => sendDefaultMessage()", data.roomId, this)
-            this.socket.emit('operator_private_chat_message',
-                {
-                    roomId: data.roomId,
-                    message: "გამარoჯობა, რით შემიძლია დაგეხმაროთ?",
-                    operatorNumber: this.name
-                });
+            this.socket.emit('operator_private_chat_message', {
+                roomId: data.roomId,
+                message: "გამარoჯობა, რით შემიძლია დაგეხმაროთ?",
+                operatorNumber: this.name
+            });
         });
 
         // TODO reorganize this with new message class
@@ -180,7 +179,9 @@ export default class Operator extends User {
             this.ROOMS.forEach(room => {
                 if (room.roomId === SMS.roomId) {
                     room.appendChatHistory(SMS)
-                    SMS.DisplayChatMessage()
+                    if (this.currentRoom.roomId === SMS.roomId) {
+                        SMS.DisplayChatMessage()
+                    }
                 }
             });
 
@@ -236,7 +237,7 @@ export default class Operator extends User {
 
     ValidateSending(message) {
         console.log("=> ValidateSending()", message)
-        if (message.sender && message.text && message.sentByOperator && message.time && message.roomId) {
+        if (message.sender && message.text && message.time && message.roomId) {
             console.log("=> ValidateSending() => true")
             return true
         }
@@ -247,10 +248,9 @@ export default class Operator extends User {
     }
 
     sendMessage() {
-
         let message = GeneratingMessage()
         message.setSender(this)
-        message.setSentByOperator(true)
+        message.setSentByMe(true)
         message.setRoomId(this.currentRoom.roomId)
 
         console.log(this.currentRoom)
