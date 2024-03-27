@@ -15,11 +15,6 @@ export default class Operator extends User {
         this.socketAuthentification();
         this.setupSocketListeners();
 
-        setTimeout(() => {
-
-            // this.socket.emit('end_chat_from_operator', "dba8f15f1af1d85dd24ad811f776c492");
-            // console.log("emitting end_chat_from_operator", this.socket)
-        }, 1000);
 
     }
 
@@ -29,15 +24,14 @@ export default class Operator extends User {
         this.currentRoom = null
         this.clearChat()
         this.socket.emit('get_operator_rooms');
-
     }
 
     clearChat() {
         console.log("=> clearChat()")
         $(".chat-header").hide()
         $(".chat-footer").hide()
-        $(".chat-content").empty()
         $("#chatContactTab").empty()
+        $("#chat-content").empty()
     }
 
     socketAuthentification() {
@@ -64,7 +58,7 @@ export default class Operator extends User {
             console.log("socket.on('authenticated')", this)
             if (sessionID) {
                 console.log('Authenticated with sessionID:', sessionID);
-                // TODO why this is here ? 
+
                 sessionStorage.setItem('operatorSession', JSON.stringify({ name, number, sessionID }));
 
                 this.setName(name);
@@ -118,8 +112,9 @@ export default class Operator extends User {
             console.log("socket.on('client_connected')", roomId)
         });
 
-        // FIXME need to revieve {clientName, clientNumber, clientId, roomId, status}
-        // on this emit
+        // TODO need to revieve {clientName, clientNumber, clientId, roomId, status, chatHistory}
+        // on this emit to send default message from here and to set last message time and message itself on room list
+        
         this.socket.on('client_connected_successfully', (data) => {
             console.log('socket.on(client connected successfully)', data)
             let temp = new Room()
@@ -135,15 +130,16 @@ export default class Operator extends User {
 
         });
 
-        // TODO reorganize this with new message class
-        // function sendDefaultMessage(self, data) {
-        // }
+
+        
 
         this.socket.on('update', () => {
+
             this.ROOMS = []
             this.currentRoom = new Room()
-            $("#chatContactTab").empty()
-            
+
+            this.clearChat()
+
             console.log("socket.on('update')")
             this.socket.emit('get_operator_rooms');
             console.log("emitting get_operator_rooms", this.socket)
@@ -206,7 +202,7 @@ export default class Operator extends User {
         this.socket.on('chat_history', (history) => {
             console.log("socket.on('chat_history')", history);
 
-            if (history.length === 0) {
+            if (history.length === 0 && this.currentRoom.roomId) {
                 console.log("() => sendDefaultMessage()", this.currentRoom.roomId)
                 this.socket.emit('operator_private_chat_message', {
                     roomId: this.currentRoom.roomId,

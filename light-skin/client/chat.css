@@ -17,6 +17,10 @@ textarea::placeholder {
   font-family: 'BPGArial';
 }
 
+#encChat:hover {
+  cursor: pointer;
+}
+
 .rating {
     display: flex;
     flex-direction: row-reverse;

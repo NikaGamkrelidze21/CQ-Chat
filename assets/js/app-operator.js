@@ -47,7 +47,6 @@ $(document).ready(function () {
         }
     })
 
-    $("#timeoutModal").modal()
 
 
     $("#end-chat-button").on('click', function () {
@@ -96,6 +95,7 @@ $(document).ready(function () {
             e.preventDefault();
         }
     });  // End of authentication-form input keydown event
+
 
 
 
@@ -281,3 +281,4 @@ $(document).ready(function () {
 
 
 // Usage:
+

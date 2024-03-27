@@ -4,10 +4,7 @@ var SELF = null
 var name = null
 var number = null;
 var sessionID = null;
-
-var authentificationPage = null
 var storedSession = null
-var chatPage = null
 
 
 storedSession = JSON.parse(sessionStorage.getItem('clientSession'));
@@ -76,8 +73,64 @@ $(document).ready(function () {
     // skt.join();
     // Main Navigation Tab
 
-    $('textarea').on('keydown', function () {
-        alert("Asdasd")
+    // $('#feedbackModal').modal('show');
+
+    // $("#waitingModal").modal();
+
+    // submitCallbackButton
+
+
+    $("#submitCallbackButton").off('click')
+
+    $("#not-working-submit-callback-button").on('click', function () {
+        console.log("(click) => not-working-submit-callback-button")
+        $("#waitingModal").modal('hide');
+        SELF.submitCallback()
+    });
+
+    $("#waiting-submit-callback-button").on('click', function () {
+        console.log("(click) => waiting-submit-callback-button")
+        $("#waitingModal").modal('hide');
+        SELF.submitCallback()
+    });
+
+    $("#submitCallbackButton").on('click', function (e) {
+        e.preventDefault()
+        console.log("(click) => submitCallbackButton")
+        SELF.submitFeedback(e)
+    });
+
+    $("#endChat").on('click', function () {
+        console.log("(click) => end-chat-button")
+        SELF.feedbackWindowInvoke()
+    });
+
+    $("#timeout-button-finish").on('click', function () {
+        SELF.revokePreTimeout()
+        SELF.revokeTimeout()
+        $("#timeoutModal").modal('hide');
+        SELF.timeoutHandler()
+    });
+
+    $("#timeout-button-continue").on('click', function () {
+        SELF.revokePreTimeout()
+        SELF.revokeTimeout()
+        SELF.setPreTimeout(15)
+        $("#timeoutModal").modal('hide');
+    });
+
+    $(document).on("keypress", ".emojionearea", function () {
+        if (event.which == 13 && !event.shiftKey) {
+            SELF.sendMessage()
+        }
+    })
+
+    console.log("tessting ", $(".rating label"))
+    $(".rating label").each(function (index) {
+        $(this).on('click', function () {
+            console.log("rating label", 5 - index)
+            SELF.setRating(5 - index)
+        });
     });
 
     $("#authentication-form").on('submit', async function asy(e) {

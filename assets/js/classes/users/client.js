@@ -10,8 +10,32 @@ export default class Client extends User {
         this.room = new Room();
         this.room.setClient(this);
 
+        this.timeInterval = null;
+        this.preTimeoutID = null;
+
+        this.FeedbackScore = 0;
+        this.FeedbackComment = "";
+
         this.setupSocketListeners();
         this.socketAuthentification();
+    }
+
+    submitCallback() {
+        console.log("=> submitCallback()", this.name, this.number, this.sessionID,)
+        console.log('test',JSON.parse(sessionStorage.getItem('clientSession')).sessionID)
+        this.socket.emit('client-submit-callback', {
+            clientName: this.name,
+            clientNumber: this.number,
+            clientSessionID: this.sessionID,
+        });
+        console.log(`socket.emit('client-submit-callback', { clientName: ${this.name}, clientNumber: ${this.number}, clientSessionID: ${this.sessionID} })`)
+        // sessionStorage.clear();
+        // window.location.href = "signin.html";
+    }
+
+    setRating(rating) {
+        console.log("=> setRating()", rating)
+        this.FeedbackScore = rating;
     }
 
     socketAuthentification() {
@@ -29,8 +53,65 @@ export default class Client extends User {
         }, 1000);
     }
 
+    revokePreTimeout() {
+        console.log("=> revokePreTimeout()")
+        clearTimeout(this.preTimeoutID);
+        this.preTimeoutID = null;
+        $("#timeoutModal").modal('hide');
+    }
+
+    revokeTimeout() {
+        console.log("=> revokeTimeout()")
+        clearInterval(this.timeInterval);
+        this.timeInterval = null;
+    }
+
+    timeoutHandler() {
+        console.log("=> timeoutHandler()")
+        clearInterval(this.timeInterval);
+        this.revokeTimeout();
+        this.revokePreTimeout();
+
+        $("#timeoutModal").modal('hide');
+
+        this.socket.emit('timeout', { session: this.sessionID })
+        console.log("socket.emit('timeout', { session: this.sessionID })", this.sessionID)
+        this.socket.emit('end_chat_from_client', this.room.roomId);
+        console.log("socket.emit('end_chat_from_client', this.room.roomId)", this.room.roomId)
+
+    }
+
+    setTimeout(second) {
+        console.log("=> setTimeout(second)", second)
+        let time = second;
+
+        this.timeInterval = setInterval(() => {
+            time -= 0.1;
+            if (time <= 0) {
+                this.timeoutHandler()
+            }
+            $("#timeout-progress-bar").css("width", `${(time / second) * 100}%`);
+        }, 100);
+
+    }
+
+    setPreTimeout(second) {
+        console.log("=> setPreTimeout(second)", second)
+        this.revokePreTimeout()
+        console.log("revokePreTimeout()")
+        this.preTimeoutID = setTimeout(() => {
+            $("#timeoutModal").modal('show');
+            this.revokePreTimeout();
+            this.setTimeout(10)
+        }, second * 1000);
+    }
+
     sendMessage() {
         console.log("(Client) => sendMessage()", this)
+
+        this.revokePreTimeout()
+        this.revokeTimeout()
+
         let message = GeneratingMessage()
         message.setSender(this)
         message.setSentByMe(true)
@@ -61,10 +142,76 @@ export default class Client extends User {
         }
     }
 
+    reloadChat() {
+        sessionStorage.clear();
+        window.location.href = "signin.html";
+    }
+
+    endChat() {
+        console.log("=> endChat()")
+        this.revokePreTimeout()
+        this.revokeTimeout()
+        this.socket.emit('end_chat_from_client', this.room.roomId);
+        console.log("socket.emit('end_chat_from_client', this.room.roomId)", this.room.roomId)
+    }
+
+    feedbackWindowInvoke() {
+        console.log("=> feedbackWindowInvoke()")
+        this.revokePreTimeout()
+        this.revokeTimeout()
+        $("#feedbackModal").modal('show');
+    }
+
+    showWaitingModal() {
+        console.log("=> loadWaitingModal()")
+        $("#waitingModal").modal('show');
+    }
+
+    hideWaitingModal() {
+        console.log("=> hideWaitingModal()")
+        $("#waitingModal").modal('hide');
+    }
+
+    submitFeedback = (e) => {
+        console.log("=> submitFeedback()")
+        e.preventDefault()
+        let FeedbackScore = this.FeedbackScore
+        let FeedbackComment = $("#feedback-comment-input").val()
+
+        console.log(FeedbackScore)
+        console.log(FeedbackComment)
+        console.log('operator_rated emitdeba with session Id', this.sessionID);
+
+        this.socket.emit("operator-rated", {
+            operator: this.room.operator.name,
+            ratingScore: FeedbackScore,
+            ratingComment: FeedbackComment,
+            customer: this.name,
+            sessionID: this.sessionID,
+        })
+
+        console.log("socket.emit('operator-rated')", {
+            operator: this.room.operator.name,
+            ratingScore: FeedbackScore,
+            ratingComment: FeedbackComment,
+            customer: this.name,
+            sessionID: this.sessionID,
+        })
+        this.reloadChat()
+    }
+
+    displayNotWorkingHours() {
+        console.log("=> displayNotWorkingHours()")
+        $("#notWorkingHoursModal").modal('show');
+    }
+
+
     setupSocketListeners() {
         this.socket.on('timeout_callback', () => {
             console.log("socket.on('timeout_callback'")
-            loadTimeoutPage()
+            sessionStorage.clear();
+            window.location.href = "signin.html";
+            // loadTimeoutPage()
         });
 
         this.socket.on('authenticated', (name, number, sessionID) => {
@@ -96,6 +243,7 @@ export default class Client extends User {
             console.log("socket.on('join_room')", roomId)
             this.socket.emit('join_room', roomId);
             console.log("socket.emit('join_room'", roomId)
+            this.hideWaitingModal()
         });
 
 
@@ -109,7 +257,11 @@ export default class Client extends User {
         this.socket.on('non_working_hours', () => {
             //TODO: aq sxva mesiji unda gamochndes
             console.log("socket.on('non_working_hours')")
+            this.displayNotWorkingHours()
+
+
         });
+
 
         this.socket.on('update_connected_operators', (operators) => {
             console.log("socket.on('update_connected_operators')", operators)
@@ -126,11 +278,14 @@ export default class Client extends User {
             console.log("socket.on('load_waiting_page')")
             sessionStorage.setItem("chat-in-process", "false");
             console.log("sessionStorage", sessionStorage)
+            this.showWaitingModal()
+
             // loadWaitingPage()
         });
 
         this.socket.on('load_feedback_page', () => {
             console.log("socket.on('load_feedback_page')")
+            this.feedbackWindowInvoke()
             // loadFeedbackPage()
         });
 
@@ -149,7 +304,6 @@ export default class Client extends User {
             // SetStatusIndicatorActive(false)
         });
 
-        //TODO Figure out if i need this 
         this.socket.on('client_rooms', (rooms) => {
             console.log("socket.on('client_rooms')", rooms)
             rooms.forEach((room) => {
@@ -172,7 +326,8 @@ export default class Client extends User {
         this.socket.on("session-ended", () => {
             console.log("socket.on('session-ended')")
             sessionStorage.clear();
-            location.reload();
+            // window.location.href = "signin.html";
+            // location.reload();
         });
 
         this.socket.on('chat_message', (msg) => {
@@ -185,6 +340,7 @@ export default class Client extends User {
             } else {
                 if (this.room.roomId === msg.roomId) {
                     sender = this.room.operator
+                    this.setPreTimeout(15)
                 }
             }
 
@@ -216,10 +372,9 @@ export default class Client extends User {
 
         this.socket.on('operator_ended_chat', () => {
             console.log("socket.on('operator_ended_chat')")
-            this.socket.emit('leave_room', currentRoomId);
-            console.log("socket.emit('leave_room'", currentRoomId)
-            currentRoomId = null;
-
+            this.socket.emit('leave_room', this.room.id);
+            console.log("socket.emit('leave_room'", this.room.id)
+            this.feedbackWindowInvoke()
             //TODO:: am dros gamochndes shepasebis forma
             //rac operator_ended_chats is mere davaemiteb imave funqciashi
         });

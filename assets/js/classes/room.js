@@ -1,6 +1,6 @@
 
 class Room {
-  constructor(roomId = null, roomStatus = null, chatHistory = [], client = null, clientJoinedTime = null, operator = null, operatorJoinedTime = null, administrator = null, administratorJoinedTime = null, support = null, supportJoinedTime = null, createdTime = null, createdBy = null, finishedTime = null, finishedBy = null, feedback = null, callback = null, transfered = false, transferedTime = null, transferedTo = null) {
+  constructor(roomId = null, roomStatus = null, chatHistory = [], client = null, clientJoinedTime = null, operator = null, operatorJoinedTime = null, createdTime = null, finishedTime = null, finishedBy = null, feedbackScore=null, feedbackComment = null, callback = null, transfered = false, transferedTime = null, transferedTo = null) {
     this.roomId = roomId;
     this.roomStatus = roomStatus;
     this.chatHistory = chatHistory;
@@ -10,22 +10,15 @@ class Room {
     this.operator = operator;
     this.operatorJoinedTime = operatorJoinedTime;
 
-    // TODO: Add administrator class
-    this.administrator = administrator;
-    this.administratorJoinedTime = administratorJoinedTime;
-
-    // TODO: Add support class
-    this.support = support;
-    this.supportJoinedTime = supportJoinedTime;
 
     this.createdTime = createdTime;
-    this.createdBy = createdBy;
 
     this.finishedTime = finishedTime;
     this.finishedBy = finishedBy;
 
     // TODO: Add feedback class
-    this.feedback = feedback;
+    this.feedbackScore = feedbackScore;
+    this.feedbackComment = feedbackComment;
 
     // TODO: Add callback class
     this.callback = callback;
@@ -53,23 +46,8 @@ class Room {
   setOperatorJoinedTime(operatorJoinedTime) { this.operatorJoinedTime = operatorJoinedTime; }
   getOperatorJoinedTime() { return this.operatorJoinedTime; }
 
-  setAdministrator(administrator) { this.administrator = administrator; }
-  getAdministrator() { return this.administrator; }
-
-  setAdministratorJoinedTime(administratorJoinedTime) { this.administratorJoinedTime = administratorJoinedTime; }
-  getAdministratorJoinedTime() { return this.administratorJoinedTime; }
-
-  setSupport(support) { this.support = support; }
-  getSupport() { return this.support; }
-
-  setSupportJoinedTime(supportJoinedTime) { this.supportJoinedTime = supportJoinedTime; }
-  getSupportJoinedTime() { return this.supportJoinedTime; }
-
   setCreatedTime(createdTime) { this.createdTime = createdTime; }
   getCreatedTime() { return this.createdTime; }
-
-  setCreatedBy(createdBy) { this.createdBy = createdBy; }
-  getCreatedBy() { return this.createdBy; }
 
   setFinishedTime(finishedTime) { this.finishedTime = finishedTime; }
   getFinishedTime() { return this.finishedTime; }
@@ -77,14 +55,16 @@ class Room {
   setFinishedBy(finishedBy) { this.finishedBy = finishedBy; }
   getFinishedBy() { return this.finishedBy; }
 
-  setFeedback(feedback) { this.feedback = feedback; }
-  getFeedback() { return this.feedback; }
+  setFeedbackScore(feedbackScore) { this.feedbackScore = feedbackScore; }
+  getFeedbackScore() { return this.feedbackScore; }
+
+  setFeedbackComment(feedbackComment) { this.feedbackComment = feedbackComment; }
+  getFeedbackComment() { return this.feedbackComment; }
 
   setCallback(callback) { this.callback = callback; }
   getCallback() { return this.callback; }
 
   setTransfered(transfered) { this.transfered = transfered; }
-
   getTransfered() { return this.transfered; }
 
   setTransferedTime(transferedTime) { this.transferedTime = transferedTime; }

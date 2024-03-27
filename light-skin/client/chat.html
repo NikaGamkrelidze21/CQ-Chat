@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <!-- Viewport-->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <!-- SEO Meta Tags-->
     <meta name="keywords" content="quicky, chat, messenger, conversation, social, communication" />
@@ -157,15 +161,15 @@
                         <ul class="nav flex-nowrap">
 
                             <li class="nav-item list-inline-item d-none d-sm-block mr-0">
-                                <a id="endChat" class="nav-link text-muted px-1" href="#" role="button" title="Details"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div id="endChat" class="nav-link text-muted px-1" href="#" role="button"
+                                    title="Details" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <!-- Default :: Inline SVG -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-x-lg" viewBox="0 0 16 16">
                                         <path
                                             d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
                                     </svg>
-                                </a>
+                                </div>
 
 
 
@@ -1555,7 +1559,7 @@
         <!-- Main End -->
 
 
-        <div class="backdrop"></div>
+
 
         <!-- All Modals Start -->
 
@@ -1574,175 +1578,229 @@
                         <form id="callback-form"></form>
                         <div class="row">
                             <div class="col-12">
+                                <h4 class="modal-title text-info bpgNino text-center" id="timeoutModalLabel">
+                                    უაქტიურობის გამო თქვენი ჩათი დასრულდება</h4>
+                                <h6 class="bpgNino mt-2 text-center">
+                                    გსურთ გააგრძელოთ ჩათი ? <br>
+                                </h6>
+                            </div>
+                            <div class="col-12">
                                 <div class="progress">
                                     <div id="timeout-progress-bar" class="progress-bar" role="progressbar"
                                         style="width: 100%" aria-valuenow="9" aria-valuemin="100" aria-valuemax="100">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <h4 class="modal-title text-info bpgNino text-center" id="timeoutModalLabel">
-                                    მიმოწერის შეფასება</h4>
-                                <h6 class="bpgNino mt-2 text-center">
-                                    თქვენ  <br> გთხოვ შეაფასო მომსახურება.
-                                </h6>
-
-                            </div>
                             </form>
-
-
                         </div>
+                    </div>
 
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button id="timeout-button-finish" type="button" class="btn btn-secondary pr-2"
+                            data-dismiss="modal">დასრულება</button>
+                        <button id="timeout-button-continue" type="button" class="btn btn-info pl-2">გაგრძელება</button>
                     </div>
                 </div>
             </div>
-
-
-            <!-- Modal 5 :: Add Note -->
-            <div class="modal modal-lg-fullscreen fade" id="addNoteModal" tabindex="-1" role="dialog"
-                aria-labelledby="addNoteModalLabel" aria-hidden="true" data-backdrop="static">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form id="feedback-form"></form>
-                            <div class="row">
-                                <div class="col-12">
-                                    <h4 class="modal-title text-info bpgNino text-center" id="addNoteModalLabel">
-                                        მიმოწერის
-                                        შეფასება</h5>
-                                        <h6 class="bpgNino mt-2 text-center">
-                                            მადლობა, რომ სარგებლობ ჩვენი მომსახურებით! <br> გთხოვ შეაფასო მომსახურება.
-                                            </h2>
-
-                                </div>
-                                <div class="col-12">
-                                    <div class="rating">
-                                        <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
-                                        <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
-                                        <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
-                                        <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
-                                        <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
-                                    </div>
-
-                                </div>
-                                <div class="col-12">
-                                    <textarea class="form-control" name="feedback-comment-input"
-                                        id="feedback-comment-input" rows="6" maxlength="300"
-                                        placeholder="მოგვწერეთ კომენტარი"></textarea>
-                                </div>
-                                <div class="col-12 text-center mt-2">
-                                    <button class="btn btn-info BPGArial" id="submitCallbackButton" type="submit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                            <path
-                                                d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
-                                        </svg>
-                                        შეფასება
-                                    </button>
-                                </div>
-                            </div>
-                            </form>
-
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal 6 :: Edit Task -->
-            <div class="modal modal-lg-fullscreen fade" id="taskModal" tabindex="-1" role="dialog"
-                aria-labelledby="taskModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="taskModalLabel">Edit task</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="editTaskName" class="col-form-label">Task name:</label>
-                                    <input type="text" class="form-control" id="editTaskName"
-                                        value="Dinner with friends" placeholder="Add task name here">
-                                </div>
-                                <div class="form-group">
-                                    <label for="editTaskDetails" class="col-form-label">Task details:</label>
-                                    <textarea class="form-control hide-scrollbar" id="editTaskDetails" rows="4"
-                                        placeholder="Add task descriptions">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis temporibus vel, molestiae nobis dolor aut sapiente. Vero possimus molestias consequatur quod, quo rem autem molestiae, accusantium nemo culpa eos doloremque?
-                      </textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success">Finish</button>
-                            <button type="button" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal 7 :: Add Task -->
-            <div class="modal modal-lg-fullscreen fade" id="addTaskModal" tabindex="-1" role="dialog"
-                aria-labelledby="addTaskModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addTaskModalLabel">Add new task</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="addTaskName" class="col-form-label">Task name:</label>
-                                    <input type="text" class="form-control" id="addTaskName" value=""
-                                        placeholder="Add task name here">
-                                </div>
-                                <div class="form-group">
-                                    <label for="addTaskDetails" class="col-form-label">Task details:</label>
-                                    <textarea class="form-control hide-scrollbar" id="addTaskDetails" rows="4"
-                                        placeholder="Add task descriptions"></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Add task</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- All Modals End -->
         </div>
-        <!-- Main Layout End -->
+
+        <!-- Modal 9 -->
+        <div class="modal fade" id="waitingModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="waitingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                    <div class="modal-body text-center bpgNino  alert alert-info ">
+                        ყველა კონსულტანტი დაკავებულია
+                    </div>
+
+                    <div class="modal-body d-flex justify-content-center ">
+                        <li class="list-inline-item">
+                            <button type="button" class="btn btn-outline-info mr-2 " data-dismiss="modal">
+                                <i class="bi bi-stopwatch"></i>
+                                დაველოდები
+                            </button>
+                        </li>
+                        <li class="list-inline-item">
+                            <button id="waiting-submit-callback-button" type="button"
+                                class="btn btn-outline-danger ml-2">
+                                <i class="bi bi-telephone"></i>
+                                დამიკავშირდით
+                            </button>
+                        </li>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 10 -->
+        <div class="modal fade" id="noWorkinHoursModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="noWorkinHoursModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                    <!-- <div class="modal-header">
+                            <h5 class="modal-title" id="waitingModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div> -->
+                    <div class="modal-body text-center bpgNino text-info ">
+                        თქვენ გვესტუმრეთ არასამუშაო საათებში <br />
+                        გსურთ ჩვენმა ოპერატორებმა გადმოგირეკონ ?
+                    </div>
+                    <div class="modal-body d-flex justify-content-center ">
+                        <li class="list-inline-item">
+                            <button type="button" id="not-working-submit-callback-button"
+                                class="btn btn-outline-info mr-2 " data-dismiss="modal">გადმომირეკეთ</button>
+                        </li>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 5 :: Add Note -->
+        <div class="modal modal-lg-fullscreen " id="feedbackModal" tabindex="-1" role="dialog"
+            aria-labelledby="feedbackModalLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form id="feedback-form"></form>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="modal-title text-info bpgNino text-center" id="feedbackModalLabel">
+                                    მიმოწერის
+                                    შეფასება</h5>
+                                    <h6 class="bpgNino mt-2 text-center">
+                                        მადლობა, რომ სარგებლობ ჩვენი მომსახურებით! <br> გთხოვ შეაფასო მომსახურება.
+                                        </h2>
+
+                            </div>
+                            <div class="col-12">
+                                <div class="rating">
+                                    <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+                                    <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
+                                    <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
+                                    <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+                                    <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+                                </div>
+
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" name="feedback-comment-input" id="feedback-comment-input"
+                                    rows="6" maxlength="300" placeholder="მოგვწერეთ კომენტარი"></textarea>
+                            </div>
+                            <div class="col-12 text-center mt-2">
+                                <button class="btn btn-info BPGArial" id="submitCallbackButton" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-send" viewBox="0 0 16 16">
+                                        <path
+                                            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+                                    </svg>
+                                    შეფასება
+                                </button>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-        <!-- Javascript Files -->
-        <script src="../../assets/vendors/jquery/jquery-3.5.0.min.js"></script>
-        <script src="../../assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-        <script src="../../assets/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
-        <script src="../../assets/vendors/svg-inject/svg-inject.min.js"></script>
-        <script src="../../assets/vendors/modal-stepes/modal-steps.min.js"></script>
-        <script src="../../assets/vendors/emojione/emojionearea.min.js"></script>
+        <!-- Modal 6 :: Edit Task -->
+        <div class="modal modal-lg-fullscreen fade" id="taskModal" tabindex="-1" role="dialog"
+            aria-labelledby="taskModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="taskModalLabel">Edit task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="editTaskName" class="col-form-label">Task name:</label>
+                                <input type="text" class="form-control" id="editTaskName" value="Dinner with friends"
+                                    placeholder="Add task name here">
+                            </div>
+                            <div class="form-group">
+                                <label for="editTaskDetails" class="col-form-label">Task details:</label>
+                                <textarea class="form-control hide-scrollbar" id="editTaskDetails" rows="4"
+                                    placeholder="Add task descriptions">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis temporibus vel, molestiae nobis dolor aut sapiente. Vero possimus molestias consequatur quod, quo rem autem molestiae, accusantium nemo culpa eos doloremque?
+                      </textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success">Finish</button>
+                        <button type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <script type="module" src="../../assets/js/app-client.js"></script>
-        <!-- <script type="module" src="../../assets/js/socket-client.js"></script> -->
+        <!-- Modal 7 :: Add Task -->
+        <div class="modal modal-lg-fullscreen fade" id="addTaskModal" tabindex="-1" role="dialog"
+            aria-labelledby="addTaskModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTaskModalLabel">Add new task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="addTaskName" class="col-form-label">Task name:</label>
+                                <input type="text" class="form-control" id="addTaskName" value=""
+                                    placeholder="Add task name here">
+                            </div>
+                            <div class="form-group">
+                                <label for="addTaskDetails" class="col-form-label">Task details:</label>
+                                <textarea class="form-control hide-scrollbar" id="addTaskDetails" rows="4"
+                                    placeholder="Add task descriptions"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light border" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Add task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <script>
-            // Scroll to end of chat
-            document.querySelector('.chat-finished').scrollIntoView({
-                block: 'end',               // "start" | "center" | "end" | "nearest",
-                behavior: 'auto'          //"auto"  | "instant" | "smooth",
-            });
 
-        </script>
+        <!-- All Modals End -->
+    </div>
+    <!-- Main Layout End -->
+
+
+
+
+    <!-- Javascript Files -->
+    <script src="../../assets/vendors/jquery/jquery-3.5.0.min.js"></script>
+    <script src="../../assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/vendors/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script src="../../assets/vendors/svg-inject/svg-inject.min.js"></script>
+    <script src="../../assets/vendors/modal-stepes/modal-steps.min.js"></script>
+    <script src="../../assets/vendors/emojione/emojionearea.min.js"></script>
+
+    <script type="module" src="../../assets/js/app-client.js"></script>
+    <!-- <script type="module" src="../../assets/js/socket-client.js"></script> -->
+
+    <script>
+        // Scroll to end of chat
+        document.querySelector('.chat-finished').scrollIntoView({
+            block: 'end',               // "start" | "center" | "end" | "nearest",
+            behavior: 'auto'          //"auto"  | "instant" | "smooth",
+        });
+
+    </script>
 </body>
 
 </html>

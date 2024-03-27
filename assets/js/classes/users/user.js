@@ -44,24 +44,6 @@ export default  class User {
 
     setCurrentRoom(currentRoom) { this.currentRoom = currentRoom; }
     getCurrentRoom() { return this.currentRoom; }
-
-
-    // TODO update this method
-    getPropries() {
-        return {
-            name: this.name,
-            number: this.number,
-            sessionID: this.sessionID,
-            socket: this.socket,
-            avatarColor: this.avatarColor,
-            type: this.type,
-            status: this.status,
-            loginTime: this.loginTime,
-            currentRoomId: this.currentRoomId
-        }
-    }
-
-
 }
 
 // FUTURE FEATURE
