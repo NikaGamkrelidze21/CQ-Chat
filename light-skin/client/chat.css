@@ -1,0 +1,51 @@
+li.iSctive {
+    background-color: #3c8dbc !important;
+    border-left: 3px solid #3c8dbc;
+    color: #444;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid #f4f4f4;
+    list-style: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+textarea::placeholder {
+  font-family: 'BPGArial';
+  font-size: 16px;
+}
+ input::placeholder {
+  font-family: 'BPGArial';
+}
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  .rating > input{ display:none;}
+  
+  .rating > label {
+    position: relative;
+      width: 1em;
+      font-size: 3rem;
+      color: #FFD600;
+      cursor: pointer;
+  }
+  .rating > label::before{ 
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+  }
+  .rating > label:hover:before,
+  .rating > label:hover ~ label:before {
+    opacity: 1 !important;
+  }
+  
+  .rating > input:checked ~ label:before{
+    opacity:1;
+  }
+  
+  .rating:hover > input:checked ~ label:before{ opacity: 0.4; }
+  

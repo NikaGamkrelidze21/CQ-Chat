@@ -1,4 +1,4 @@
-import Message  from "../classes/message.js"
+import Message from "../classes/message.js"
 
 
 function ValidateSending(sender, text, sentByOperator, time, currentRoomId) {
@@ -22,17 +22,21 @@ function DisplayMessageHistory(messages) {
     })
 }
 
-export function GeneratingMessage(){
+export function GeneratingMessage() {
     let text = $("#messageInput").val();
+    if (text == "") {
+        text = $(".emojionearea-editor").html()
+        console.log("text", text)
+    }
     let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
+
     let message = new Message()
-    
+
     message.setText(text)
     message.setTime(time)
-    
+
     console.log("=> GeneratingMessage()", message)
-    
+
     message.InputCleanup()
     return message
 }
@@ -99,7 +103,7 @@ function SendMessageButtonHandler() {
 }
 
 function AbandonRoom() {
-    
+
 }
 
-export { SendMessageButtonHandler_Client, SendMessageButtonHandler_Operator, DisplayMessageHistory, ValidateSending}
+export { SendMessageButtonHandler_Client, SendMessageButtonHandler_Operator, DisplayMessageHistory, ValidateSending }

@@ -41,6 +41,15 @@ $(document).ready(function () {
         alert("Asdasd")
     });
 
+    $(document).on("keypress", ".emojionearea", function () {
+        if (event.which == 13 && !event.shiftKey) {
+            SELF.sendMessage()
+        }
+    })
+
+    $("#timeoutModal").modal()
+
+
     $("#end-chat-button").on('click', function () {
         console.log("(click) => end-chat-button")
         SELF.abandonRoom(SELF.currentRoom.roomId)

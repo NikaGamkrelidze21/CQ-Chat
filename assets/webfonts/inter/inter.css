@@ -1,39 +1,69 @@
+
 @font-face {
-  font-family: 'Inter';
-  font-weight: 300;
-  src: url('fonts/inter-light.woff2') format('woff2'),
-       url('fonts/inter-light.woff') format('woff');
-  font-display: swap;
+  font-family: 'BPGNinoMtavruli-Bold';
+  src: url('fonts_geo/bpg_nino/bpgninomtavrulibold.eot');
+  src: url('fonts_geo/bpg_nino/bpgninomtavrulibold.eot?#iefix') format('embedded-opentype'),
+       url('fonts_geo/bpg_nino/bpgninomtavrulibold.woff') format('woff'),
+       url('fonts_geo/bpg_nino/bpgninomtavrulibold.ttf') format('truetype'),
+       url('fonts_geo/bpg_nino/bpgninomtavrulibold.svg#BPGNinoMtavruli-Bold') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  font-weight: 400;
-  src: url('fonts/inter-regular.woff2') format('woff2'),
-       url('fonts/inter-regular.woff') format('woff');
-  font-display: swap;
-}
+      font-family: 'BPGArial';
+      src: url('fonts_geo/bpg_arial/bpgarial2009.eot');
+      src: url('fonts_geo/bpg_arial/bpgarial2009.eot?#iefix') format('embedded-opentype'),
+           url('fonts_geo/bpg_arial/bpgarial2009.woff') format('woff'),
+           url('fonts_geo/bpg_arial/bpgarial2009.ttf') format('truetype'),
+           url('fonts_geo/bpg_arial/bpgarial2009.svg#BPGArial') format('svg');
+      font-weight: bold;
+      font-style: normal;
+  }
+
+
 
 @font-face {
-  font-family: 'Inter';
-  font-weight: 500;
-  src: url('fonts/inter-medium.woff2') format('woff2'),
-       url('fonts/inter-medium.woff') format('woff');
-  font-display: swap;
+  font-family: 'BPGMrgvlovani';
+  src: url('fonts_geo/mrglovani/bpg_mrgvlovani_2010.eot');
+  src: url('fonts_geo/mrglovani/bpg_mrgvlovani_2010.eot?#iefix') format('embedded-opentype'),
+       url('fonts_geo/mrglovani/bpg_mrgvlovani_2010.woff') format('woff'),
+       url('fonts_geo/mrglovani/bpg_mrgvlovani_2010.ttf') format('truetype'),
+       url('fonts_geo/mrglovani/bpg_mrgvlovani_2010.svg#BPGMrgvlovani') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
-@font-face {
-  font-family: 'Inter';
-  font-weight: 600;
-  src: url('fonts/inter-semibold.woff2') format('woff2'),
-       url('fonts/inter-semibold.woff') format('woff');
-  font-display: swap;
+
+.mrgvlovani{
+ font-family: 'BPGMrgvlovani';
+font-size: 11px;
 }
 
-@font-face {
-  font-family: 'Inter';
-  font-weight: 800;
-  src: url('fonts/inter-bold.woff2') format('woff2'),
-       url('fonts/inter-bold.woff') format('woff');
-  font-display: swap;
+
+
+.bpgNino {
+font-family: 'BPGNinoMtavruli-Bold';
+}
+
+.bpgNinoNorm {
+font-family: 'BPGNinoMtavruli-Normal';
+}
+
+.bpgArial{
+font-family: 'BPGArial';
+}
+
+.bebas{
+  font-family: 'BebasNeueRegular';
+}
+
+.bpg_gel{
+font-family: "BPGGel";
+}
+
+
+.dropdown-item.active, .dropdown-item:active{
+background-color: #6a5db6 !important;
+color: white !important;
 }

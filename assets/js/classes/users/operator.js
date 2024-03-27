@@ -94,6 +94,7 @@ export default class Operator extends User {
                 console.log("ROOMS", this.ROOMS)
 
                 if (this.ROOMS.length > 0) {
+                    $("#chatContactTab").empty()
                     this.ROOMS.forEach(room => {
                         room.displayRoom()
                     })
@@ -117,7 +118,7 @@ export default class Operator extends User {
             console.log("socket.on('client_connected')", roomId)
         });
 
-        // TODO need to revieve {clientName, clientNumber, clientId, roomId, status}
+        // FIXME need to revieve {clientName, clientNumber, clientId, roomId, status}
         // on this emit
         this.socket.on('client_connected_successfully', (data) => {
             console.log('socket.on(client connected successfully)', data)
@@ -127,14 +128,11 @@ export default class Operator extends User {
             temp.setClient(new User(data.clientId))
             temp.setOperator(this)
             temp.displayRoom()
+
             this.ROOMS.push(temp)
 
-            console.log("() => sendDefaultMessage()", data.roomId, this)
-            this.socket.emit('operator_private_chat_message', {
-                roomId: data.roomId,
-                message: "გამარoჯობა, რით შემიძლია დაგეხმაროთ?",
-                operatorNumber: this.name
-            });
+
+
         });
 
         // TODO reorganize this with new message class
@@ -142,7 +140,13 @@ export default class Operator extends User {
         // }
 
         this.socket.on('update', () => {
+            this.ROOMS = []
+            this.currentRoom = new Room()
+            $("#chatContactTab").empty()
+            
             console.log("socket.on('update')")
+            this.socket.emit('get_operator_rooms');
+            console.log("emitting get_operator_rooms", this.socket)
             // currentRoomId = null;
             // loadOperatorPage();
             // displayChatHistory([]);
@@ -179,7 +183,7 @@ export default class Operator extends User {
             this.ROOMS.forEach(room => {
                 if (room.roomId === SMS.roomId) {
                     room.appendChatHistory(SMS)
-                    if (this.currentRoom.roomId === SMS.roomId) {
+                    if (this.currentRoom && this.currentRoom.roomId === SMS.roomId) {
                         SMS.DisplayChatMessage()
                     }
                 }
@@ -201,6 +205,16 @@ export default class Operator extends User {
 
         this.socket.on('chat_history', (history) => {
             console.log("socket.on('chat_history')", history);
+
+            if (history.length === 0) {
+                console.log("() => sendDefaultMessage()", this.currentRoom.roomId)
+                this.socket.emit('operator_private_chat_message', {
+                    roomId: this.currentRoom.roomId,
+                    message: "გამარoჯობა, რით შემიძლია დაგეხმაროთ?",
+                    operatorNumber: this.name
+                });
+                return
+            }
 
             const messages = history.map((msg) => {
                 let sender = null
